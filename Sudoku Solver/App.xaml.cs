@@ -13,5 +13,9 @@ namespace Sudoku_Solver
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            InitializeComponent();
+        }
     }
 }

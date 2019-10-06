@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Sudoku_Solver
+namespace Sudoku_Solver.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
