@@ -5,8 +5,126 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sudoku_Solver"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Title="Sudoku Solver" Height="555" Width="500">
+    <Window.Resources>
+        <DataTemplate x:Key="DataTemplate_Level2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Line Stretch="Fill" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Stroke="Black" StrokeThickness="{Binding TopThickness}" X2="3"/>
+                <Line Stretch="Fill" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Stroke="Black" StrokeThickness="{Binding LeftThickness}" Y2="3"/>
+                <Line Stretch="Fill" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Stroke="Black" StrokeThickness="{Binding BottomThickness}" X2="3"/>
+                <Line Stretch="Fill" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Stroke="Black" StrokeThickness="{Binding RightThickness}" Y2="3"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=CellValue, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                         Height="50" Width="50" TextAlignment="Center" Padding="10" FontSize="20" Background="DarkSlateGray" 
+                         Foreground="White" SelectionBrush="#262626">
+                    <TextBox.Style>
+                        <Style BasedOn="{x:Null}" TargetType="{x:Type TextBox}">
+                            <Setter Property="BorderThickness" Value="2"/>
+                            <Setter Property="Padding" Value="1"/>
+                            <Setter Property="AllowDrop" Value="true"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TextBox}">
+                                        <Border x:Name="bg" BorderBrush="#FF825E5E" BorderThickness="1">
+                                            <ScrollViewer x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter Property="BorderBrush" TargetName="bg" Value="#990f0f"/>
+                                                <Setter Property="BorderThickness" TargetName="bg" Value="2"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DataTemplate_Level1">
+            <ItemsControl ItemsSource="{Binding}" ItemTemplate="{DynamicResource DataTemplate_Level2}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid Background="Gray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <ItemsControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" x:Name="Board" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
+        <Button Foreground="White" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="SolvePuzzle" 
+                Content="Solve Puzzle">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#260f0f"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#401818" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#7d2e2e"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Foreground="White" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" x:Name="VerifyPuzzle" 
+                Content="Verify Solution">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#260f0f"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#401818" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#7d2e2e"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
 </Window>
