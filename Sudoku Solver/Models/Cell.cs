@@ -83,16 +83,28 @@ namespace Sudoku_Solver.Models
             get { return bottomThickness; }
         }
 
-        public List<string> PossibleValues = new List<string>();
-        public bool Visited = false;
+        public List<string> PossibleValues;
+        public bool Visited;
+        private int _boardSize;
 
-        public Cell(bool leftWall, bool rightWall, bool topWall, bool bottomWall, string value = "")
+        public Cell(bool leftWall, bool rightWall, bool topWall, bool bottomWall, int boardSize, string value = "")
         {
             CellValue = value;
             LeftWall = leftWall;
             RightWall = rightWall;
             TopWall = topWall;
             BottomWall = bottomWall;
+            _boardSize = boardSize;
+            SetPossibleValues();
+        }
+        
+        public void SetPossibleValues()
+        {
+            PossibleValues = new List<string>();
+            for (int i = 1; i <= _boardSize; i++)
+            {
+                PossibleValues.Add(i.ToString());
+            }
         }
     }
 }

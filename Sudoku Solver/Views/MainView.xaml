@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sudoku_Solver"
         mc:Ignorable="d"
-        Title="Sudoku Solver" Height="555" Width="500">
+        Title="Sudoku Solver" Height="580" Width="500">
     <Window.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
             <Grid>
@@ -65,7 +65,7 @@
     </Window.Resources>
     <Grid Background="Gray">
         <Grid.RowDefinitions>
-            <RowDefinition Height="5"/>
+            <RowDefinition Height="30"/>
             <RowDefinition/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
@@ -75,7 +75,8 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
-        <ItemsControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" x:Name="Board" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Content="{Binding ValidSolution}"/>
+        <ItemsControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" x:Name="Board_BoardValues" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
         <Button Foreground="White" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="SolvePuzzle" 
                 Content="Solve Puzzle">
             <Button.Style>
