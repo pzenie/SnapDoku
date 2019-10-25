@@ -5,14 +5,22 @@ namespace Sudoku_Solver.Models
 {
     internal class Cell : PropertyChangedBase
     {
+        private const int offThickness = 0;
+        private const int onThickness = 3;
+
         private string cellValue;
         public string CellValue
         {
             get { return cellValue; }
             set
             {
-                if (value != null && (value.Length == 0 || int.TryParse(value, out int n)))
+                int n;
+                if (value != null && (value.Length == 0 || int.TryParse(value, out n)))
                 {
+                    if(value.Length == 0)
+                    {
+                        SetPossibleValues();
+                    }
                     cellValue = value;
                     NotifyOfPropertyChange(nameof(CellValue));
                 }
@@ -20,9 +28,6 @@ namespace Sudoku_Solver.Models
         }
 
         public int x, y;
-
-        private const int offThickness = 0;
-        private const int onThickness = 3;
 
         public bool LeftWall
         {
@@ -82,8 +87,34 @@ namespace Sudoku_Solver.Models
         {
             get { return bottomThickness; }
         }
-
-        public List<string> PossibleValues;
+      private string possibleValuesString;
+      public string PossibleValuesString
+      {
+         get
+         {
+            string stringValue = "";
+            foreach (string s in PossibleValues)
+            {
+               stringValue += s + " ";
+            }
+            return stringValue;
+         }
+         set
+         {
+            possibleValuesString = value;
+            NotifyOfPropertyChange(nameof(PossibleValuesString));
+         }
+      }
+         private List<string> PossibleValues;
+         public void RemovePossibleValue(string value)
+         {
+         PossibleValues.Remove(value);
+         }
+         public List<string> GetPossibleValues()
+         {
+            NotifyOfPropertyChange(nameof(PossibleValuesString));
+            return PossibleValues;
+         }
         public bool Visited;
         private int _boardSize;
 
@@ -96,6 +127,19 @@ namespace Sudoku_Solver.Models
             BottomWall = bottomWall;
             _boardSize = boardSize;
             SetPossibleValues();
+        }
+     
+        public Cell(Cell cell)
+        {
+            CellValue = cell.cellValue;
+            LeftWall = cell.LeftWall;
+            RightWall = cell.RightWall;
+            TopWall = cell.TopWall;
+            BottomWall = cell.BottomWall;
+            _boardSize = cell._boardSize;
+            PossibleValues = FastDeepCloner.DeepCloner.Clone(cell.PossibleValues);
+            x = cell.x;
+            y = cell.y;
         }
         
         public void SetPossibleValues()

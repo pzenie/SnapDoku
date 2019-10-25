@@ -1,14 +1,9 @@
 ﻿using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sudoku_Solver.Models
 {
-    class BoardModel : PropertyChangedBase
+    internal class BoardModel : PropertyChangedBase
     {
         public ObservableCollection<ObservableCollection<Cell>> BoardValues { get; set; }
 
@@ -20,6 +15,20 @@ namespace Sudoku_Solver.Models
             BoardValues = new ObservableCollection<ObservableCollection<Cell>>();
             currentX = 0;
             currentY = 0;
+        }
+
+        public BoardModel(BoardModel board)
+        {
+            BoardValues = FastDeepCloner.DeepCloner.Clone(board.BoardValues);
+            for(int i =0; i < BoardValues.Count; i++)
+            {
+                for(int j = 0; j < BoardValues.Count; j++)
+                {
+                    BoardValues[i][j] = new Cell(board.BoardValues[i][j]);
+                }
+            }
+            currentX = board.currentX;
+            currentY = board.currentY;
         }
     }
 }
