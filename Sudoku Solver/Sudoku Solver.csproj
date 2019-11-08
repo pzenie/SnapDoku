@@ -85,10 +85,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Models\Backtracker.cs" />
     <Compile Include="Models\BoardInitiation.cs" />
     <Compile Include="Models\BoardModel.cs" />
     <Compile Include="Models\Cell.cs" />
     <Compile Include="Models\GroupGetter.cs" />
+    <Compile Include="Models\Pruner.cs" />
     <Compile Include="Models\PuzzleVerifier.cs" />
     <Compile Include="Models\Solver.cs" />
     <Compile Include="Resources\MagicStrings.cs" />

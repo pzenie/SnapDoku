@@ -40,7 +40,7 @@ namespace Sudoku_Solver.ViewModels
         {
             Thread thread = new Thread(() =>
             {
-               Board = Solver.PuzzleSolver(Board);
+               Board = Solver.PuzzleSolver(Board, GroupGetter.GetStandardGroups(Board));
                ValidSolution = PuzzleVerifier.VerifyPuzzle(Board) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED;
 
             });

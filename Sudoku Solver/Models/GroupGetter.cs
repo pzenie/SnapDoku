@@ -5,47 +5,55 @@ namespace Sudoku_Solver.Models
 {
    internal static class GroupGetter
    {
-      public static List<List<Cell>> GetVerticals(BoardModel board)
+      public static List<List<List<Tuple<int,int>>>> GetStandardGroups(BoardModel board)
       {
-         List<List<Cell>> verticals = new List<List<Cell>>();
+         List<List<List<Tuple<int, int>>>> groups = new List<List<List<Tuple<int, int>>>>();
+         groups.Add(GetVerticals(board));
+         groups.Add(GetHorizontals(board));
+         groups.Add(GetGroups(board));
+         return groups;
+      }
+      public static List<List<Tuple<int, int>>> GetVerticals(BoardModel board)
+      {
+         List<List<Tuple<int, int>>> verticals = new List<List<Tuple<int, int>>>();
          for (int i = 0; i < board.BoardValues.Count; i++)
          {
-            verticals.Add(new List<Cell>());
+            verticals.Add(new List<Tuple<int, int>>());
          }
          foreach (Cell cell in FlattenCells(board))
          {
-            verticals[cell.x].Add(cell);
+            verticals[cell.x].Add(new Tuple<int,int>(cell.x, cell.y));
          }
          return verticals;
       }
 
-      public static List<List<Cell>> GetHorizontals(BoardModel board)
+      public static List<List<Tuple<int, int>>> GetHorizontals(BoardModel board)
       {
-         List<List<Cell>> horizontals = new List<List<Cell>>();
+         List<List<Tuple<int, int>>> horizontals = new List<List<Tuple<int, int>>>();
          for (int i = 0; i < board.BoardValues.Count; i++)
          {
-            horizontals.Add(new List<Cell>());
+            horizontals.Add(new List<Tuple<int, int>>());
          }
          foreach (Cell cell in FlattenCells(board))
          {
-            horizontals[cell.y].Add(cell);
+            horizontals[cell.y].Add(new Tuple<int, int>(cell.x, cell.y));
          }
          return horizontals;
       }
 
-      public static List<List<Cell>> GetGroups(BoardModel board)
+      public static List<List<Tuple<int, int>>> GetGroups(BoardModel board)
       {
-         List<List<Cell>> groups = new List<List<Cell>>();
+         List<List<Tuple<int, int>>> groups = new List<List<Tuple<int, int>>>();
          ResetVisited(board);
          foreach (Cell cell in FlattenCells(board))
          {
             if (!cell.Visited)
             {
                Queue<Cell> neighbors = new Queue<Cell>();
-               List<Cell> group = new List<Cell>();
+               List<Tuple<int, int>> group = new List<Tuple<int, int>>();
                AddNeighbors(cell, neighbors, board);
                cell.Visited = true;
-               group.Add(cell);
+               group.Add(new Tuple<int, int>(cell.x, cell.y));
                while (neighbors.Count > 0)
                {
                   Cell neighbor = neighbors.Dequeue();
@@ -53,7 +61,7 @@ namespace Sudoku_Solver.Models
                   {
                      neighbor.Visited = true;
                      AddNeighbors(neighbor, neighbors, board);
-                     group.Add(neighbor);
+                     group.Add(new Tuple<int, int>(neighbor.x, neighbor.y));
                   }
                }
                groups.Add(group);

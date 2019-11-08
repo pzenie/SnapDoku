@@ -19,12 +19,13 @@ namespace Sudoku_Solver.Models
 
         public BoardModel(BoardModel board)
         {
-            BoardValues = FastDeepCloner.DeepCloner.Clone(board.BoardValues);
-            for(int i =0; i < BoardValues.Count; i++)
+            BoardValues = new ObservableCollection<ObservableCollection<Cell>>();
+            for(int i =0; i < board.BoardValues.Count; i++)
             {
-                for(int j = 0; j < BoardValues.Count; j++)
+                BoardValues.Add(new ObservableCollection<Cell>());
+                for(int j = 0; j < board.BoardValues.Count; j++)
                 {
-                    BoardValues[i][j] = new Cell(board.BoardValues[i][j]);
+                    BoardValues[i].Add(new Cell(board.BoardValues[i][j]));
                 }
             }
             currentX = board.currentX;

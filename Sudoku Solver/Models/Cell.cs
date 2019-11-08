@@ -87,35 +87,40 @@ namespace Sudoku_Solver.Models
         {
             get { return bottomThickness; }
         }
-      private string possibleValuesString;
-      public string PossibleValuesString
-      {
-         get
-         {
-            string stringValue = "";
-            foreach (string s in PossibleValues)
+        private string possibleValuesString;
+        public string PossibleValuesString
+        {
+            get
             {
-               stringValue += s + " ";
+               string stringValue = "";
+               foreach (string s in PossibleValues)
+               {
+                  stringValue += s + " ";
+               }
+               return stringValue;
             }
-            return stringValue;
-         }
-         set
-         {
-            possibleValuesString = value;
-            NotifyOfPropertyChange(nameof(PossibleValuesString));
-         }
-      }
-         private List<string> PossibleValues;
-         public void RemovePossibleValue(string value)
-         {
-         PossibleValues.Remove(value);
-         }
-         public List<string> GetPossibleValues()
-         {
+            set
+            {
+               possibleValuesString = value;
+               NotifyOfPropertyChange(nameof(PossibleValuesString));
+            }
+        }
+        private List<string> PossibleValues;
+        public void RemovePossibleValue(string value)
+        {
+            PossibleValues.Remove(value);
+        }
+        public List<string> GetPossibleValues()
+        {
             NotifyOfPropertyChange(nameof(PossibleValuesString));
             return PossibleValues;
-         }
-        public bool Visited;
+        }
+        private bool visited;
+        public bool Visited
+        {
+            get { return visited; }
+            set { visited = value; }
+        }
         private int _boardSize;
 
         public Cell(bool leftWall, bool rightWall, bool topWall, bool bottomWall, int boardSize, string value = "")
@@ -137,12 +142,12 @@ namespace Sudoku_Solver.Models
             TopWall = cell.TopWall;
             BottomWall = cell.BottomWall;
             _boardSize = cell._boardSize;
-            PossibleValues = FastDeepCloner.DeepCloner.Clone(cell.PossibleValues);
+            PossibleValues = new List<string>(cell.PossibleValues);
             x = cell.x;
             y = cell.y;
         }
         
-        public void SetPossibleValues()
+        private void SetPossibleValues()
         {
             PossibleValues = new List<string>();
             for (int i = 1; i <= _boardSize; i++)
