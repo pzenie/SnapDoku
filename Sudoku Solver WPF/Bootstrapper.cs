@@ -1,8 +1,8 @@
 ﻿using Caliburn.Micro;
-using Sudoku_Solver.ViewModels;
+using Sudoku_Solver_WPF.ViewModels;
 using System.Windows;
 
-namespace Sudoku_Solver
+namespace Sudoku_Solver_WPF
 {
     class Bootstrapper : BootstrapperBase
     {

@@ -1,9 +1,9 @@
 ﻿using Caliburn.Micro;
 using System.Collections.ObjectModel;
 
-namespace Sudoku_Solver.Models
+namespace Sudoku_Solver.Data
 {
-    internal class BoardModel : PropertyChangedBase
+    public class BoardModel : PropertyChangedBase
     {
         public ObservableCollection<ObservableCollection<Cell>> BoardValues { get; set; }
 

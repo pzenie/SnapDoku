@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Caliburn.Micro;
 
-namespace Sudoku_Solver.Models
+namespace Sudoku_Solver.Data
 {
-    internal class Cell : PropertyChangedBase
+    public class Cell : PropertyChangedBase
     {
         private const int offThickness = 0;
         private const int onThickness = 3;

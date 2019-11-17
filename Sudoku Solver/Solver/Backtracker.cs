@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Sudoku_Solver.Data;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Sudoku_Solver.Models
+namespace Sudoku_Solver.Solver
 {
    internal static class Backtracker
    {

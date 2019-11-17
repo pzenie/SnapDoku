@@ -1,9 +1,11 @@
-﻿using Sudoku_Solver.Models;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using System.Threading;
-using Sudoku_Solver.Resources;
+using Sudoku_Solver_WPF.Resources;
+using Sudoku_Solver.Data;
+using Sudoku_Solver.Initiation;
+using Sudoku_Solver.Solver;
 
-namespace Sudoku_Solver.ViewModels
+namespace Sudoku_Solver_WPF.ViewModels
 {
     internal class MainViewModel : PropertyChangedBase
     {

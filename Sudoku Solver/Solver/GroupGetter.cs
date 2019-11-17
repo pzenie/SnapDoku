@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Sudoku_Solver.Data;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-namespace Sudoku_Solver.Models
+
+namespace Sudoku_Solver.Solver
 {
-   internal static class GroupGetter
+   public static class GroupGetter
    {
       public static List<List<List<Tuple<int,int>>>> GetStandardGroups(BoardModel board)
       {

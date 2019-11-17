@@ -1,8 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using Sudoku_Solver.Data;
+using System.Collections.ObjectModel;
 
-namespace Sudoku_Solver.Models
+namespace Sudoku_Solver.Initiation
 {
-   internal static class BoardInitiation
+   public static class BoardInitiation
    {
       public static void InitCommaSeperatedBoard(BoardModel board, string inputBoard)
       {

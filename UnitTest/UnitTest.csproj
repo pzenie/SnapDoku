@@ -57,12 +57,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AssignForcedTest.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Sudoku Solver\Sudoku Solver.csproj">
-      <Project>{265c961c-7253-4f07-b3e2-1a0a3281bd6d}</Project>
-      <Name>Sudoku Solver</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

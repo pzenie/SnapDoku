@@ -1,6 +1,6 @@
-﻿namespace Sudoku_Solver.Resources
+﻿namespace Sudoku_Solver.Initiation
 {
-   internal static class TestInputs
+   public static class TestInputs
    {
       public const string SOLVED_BOARD_1 = "5,3,4,6,7,8,9,1,2," +
                                            "6,7,2,1,9,5,3,4,8," +

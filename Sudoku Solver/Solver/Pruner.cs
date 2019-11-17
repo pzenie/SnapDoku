@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Sudoku_Solver.Data;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Sudoku_Solver.Models
+namespace Sudoku_Solver.Solver
 {
    internal static class Pruner
    {

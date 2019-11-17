@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Sudoku_Solver.Data;
+using System;
 using System.Collections.Generic;
 
-namespace Sudoku_Solver.Models
+namespace Sudoku_Solver.Solver
 {
-   internal static class PuzzleVerifier
+   public static class PuzzleVerifier
    {
       public static bool VerifyPuzzle(BoardModel board)
       {
