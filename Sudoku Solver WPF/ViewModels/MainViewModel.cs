@@ -35,7 +35,7 @@ namespace Sudoku_Solver_WPF.ViewModels
         {
             Board = new BoardModel();
             BoardInitiation.InitBasicBoard(Board);
-            BoardInitiation.InitCommaSeperatedBoard(Board, TestInputs.UNSOLVED_BOARD_EXTREME);
+            BoardInitiation.InitCommaSeperatedBoard(Board, TestInputs.UNSOLVED_BOARD_HARD);
         }
 
         public void SolvePuzzle()
