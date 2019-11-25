@@ -36,6 +36,7 @@ namespace Sudoku_Solver.Data
             {
                 leftThickness = value ? onThickness : offThickness;
                 NotifyOfPropertyChange(nameof(LeftThickness));
+                NotifyOfPropertyChange(nameof(LeftWall));
             }
         }
         public bool RightWall
@@ -45,6 +46,7 @@ namespace Sudoku_Solver.Data
             {
                 rightThickness = value ? onThickness : offThickness;
                 NotifyOfPropertyChange(nameof(RightThickness));
+                NotifyOfPropertyChange(nameof(RightWall));
             }
         }
         public bool TopWall
@@ -54,6 +56,7 @@ namespace Sudoku_Solver.Data
             {
                 topThickness = value ? onThickness : offThickness;
                 NotifyOfPropertyChange(nameof(TopThickness));
+                NotifyOfPropertyChange(nameof(TopWall));
             }
         }
         public bool BottomWall
@@ -63,6 +66,7 @@ namespace Sudoku_Solver.Data
             {
                 bottomThickness = value ? onThickness : offThickness;
                 NotifyOfPropertyChange(nameof(BottomThickness));
+                NotifyOfPropertyChange(nameof(BottomWall));
             }
         }
 
