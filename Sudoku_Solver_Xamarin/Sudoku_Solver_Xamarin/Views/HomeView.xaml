@@ -8,30 +8,58 @@
              x:Class="Sudoku_Solver_Xamarin.Views.HomeView">
     <ContentPage.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
-            <Grid HorizontalOptions="FillAndExpand">
+            <Grid HorizontalOptions="FillAndExpand" Padding="0,0,0,0" ColumnSpacing="0" RowSpacing="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="3"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="3"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="1"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="3"/>
+                    <ColumnDefinition Width="1"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="1"/>
                 </Grid.ColumnDefinitions>
                 <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="0" Grid.ColumnSpan="3" Color="Black" IsVisible="{Binding TopWall}"/>
                 <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="0" Grid.RowSpan="3" Color="Black" IsVisible="{Binding LeftWall}"/>
                 <BoxView Grid.Row="2" WidthRequest="1" Grid.Column="0" Grid.ColumnSpan="3" Color="Black" IsVisible="{Binding BottomWall}"/>
                 <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="2" Grid.RowSpan="3" Color="Black" IsVisible="{Binding RightWall}"/>
+                <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="0" Grid.ColumnSpan="3" Color="#003426">
+                    <BoxView.Triggers>
+                        <DataTrigger TargetType="BoxView" Binding="{Binding TopWall}" Value="True">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </DataTrigger>
+                    </BoxView.Triggers>
+                </BoxView>
+                <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="0" Grid.RowSpan="3" Color="#003426">
+                    <BoxView.Triggers>
+                        <DataTrigger TargetType="BoxView" Binding="{Binding LeftWall}" Value="True">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </DataTrigger>
+                    </BoxView.Triggers>
+                </BoxView>
+                <BoxView Grid.Row="2" WidthRequest="1" Grid.Column="0" Grid.ColumnSpan="3" Color="#003426">
+                    <BoxView.Triggers>
+                        <DataTrigger TargetType="BoxView" Binding="{Binding BottomWall}" Value="True">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </DataTrigger>
+                    </BoxView.Triggers>
+                </BoxView>
+                <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="2" Grid.RowSpan="3" Color="#003426">
+                    <BoxView.Triggers>
+                        <DataTrigger TargetType="BoxView" Binding="{Binding RightWall}" Value="True">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </DataTrigger>
+                    </BoxView.Triggers>
+                </BoxView>
                 <Entry Grid.Row="1" Grid.Column="1" Text="{Binding Path=CellValue, Mode=TwoWay}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 
-                       FontSize="12" BackgroundColor="DarkSlateGray" TextColor="White" />
+                       FontSize="20" BackgroundColor="DarkSlateGray" TextColor="White"/>
             </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="DataTemplate_Level1">
-            <controls:ItemsControl ItemsSource="{Binding}" ItemTemplate="{DynamicResource DataTemplate_Level2}" VerticalOptions="FillAndExpand">
+            <controls:ItemsControl ItemsSource="{Binding}" ItemTemplate="{DynamicResource DataTemplate_Level2}" VerticalOptions="FillAndExpand" Spacing="0" Padding="0,0,0,0">
                 <controls:ItemsControl.ItemsPanel>
-                    <StackLayout Orientation="Horizontal"/>
+                    <StackLayout Orientation="Horizontal" Spacing="0" Padding="0,0,0,0"/>
                 </controls:ItemsControl.ItemsPanel>
             </controls:ItemsControl>
         </DataTemplate>
@@ -43,7 +71,7 @@
         </Style>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid BackgroundColor="Gray">
+        <Grid BackgroundColor="Gray" Padding="0,0,0,0" ColumnSpacing="0" RowSpacing="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="10" />
                 <RowDefinition Height="8*"/>
@@ -53,7 +81,8 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <controls:ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Board.BoardValues}" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
+            <controls:ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Board.BoardValues}" 
+                                   ItemTemplate="{DynamicResource DataTemplate_Level1}" Spacing="0" Padding="0,0,0,0"/>
             <Button Grid.Row="2" Grid.Column="0" Text="Solve Puzzle" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
             <Button Grid.Row="2" Grid.Column="1" Text="Verify Solution" Command="{Binding VerifyPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
         </Grid>
