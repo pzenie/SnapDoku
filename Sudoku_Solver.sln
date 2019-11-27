@@ -7,13 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku Solver WPF", "Sudoku
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{D2754FD8-550B-469C-8DEA-B87E2E80E9C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sudoku Solver", "Sudoku Solver\Sudoku Solver.csproj", "{F0FDB3C0-CFAE-4F83-BA79-307E892703B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sudoku_Solver", "Sudoku_Solver\Sudoku_Solver.csproj", "{F0FDB3C0-CFAE-4F83-BA79-307E892703B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku_Solver_Xamarin.Android", "Sudoku_Solver_Xamarin\Sudoku_Solver_Xamarin.Android\Sudoku_Solver_Xamarin.Android.csproj", "{5139EA5B-7A99-4266-9F56-DCE6048864CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku_Solver_Xamarin.iOS", "Sudoku_Solver_Xamarin\Sudoku_Solver_Xamarin.iOS\Sudoku_Solver_Xamarin.iOS.csproj", "{7D287E42-90EB-4625-BCF9-FCD57D0839F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku_Solver_Xamarin", "Sudoku_Solver_Xamarin\Sudoku_Solver_Xamarin\Sudoku_Solver_Xamarin.csproj", "{41B20793-C4A8-4982-8378-5F83556D2EB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sudoku_Solver_Xamarin", "Sudoku_Solver_Xamarin\Sudoku_Solver_Xamarin\Sudoku_Solver_Xamarin.csproj", "{41B20793-C4A8-4982-8378-5F83556D2EB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
