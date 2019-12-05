@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Input;
@@ -7,6 +9,7 @@ using Caliburn.Micro;
 using Sudoku_Solver.Data;
 using Sudoku_Solver.Initiation;
 using Sudoku_Solver.Solver;
+using Sudoku_Solver_Xamarin.Resources;
 using Xamarin.Forms;
 
 namespace Sudoku_Solver_Xamarin.ViewModels
@@ -24,14 +27,25 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             }
         }
 
-        private string validSolution;
-        public string ValidSolution
+        private bool isLoading;
+        public bool IsLoading
         {
-            get { return validSolution; }
+            get { return isLoading; }
             set
             {
-                validSolution = value;
-                NotifyOfPropertyChange(nameof(ValidSolution));
+                isLoading = value;
+                NotifyOfPropertyChange(nameof(IsLoading));
+            }
+        }
+
+        private string statusText;
+        public string StatusText
+        {
+            get { return statusText; }
+            set
+            {
+                statusText = value;
+                NotifyOfPropertyChange(nameof(StatusText));
             }
         }
 
@@ -41,27 +55,52 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             {
                 SolvePuzzle();
             });
+            VerifyPuzzleCommand = new Command(execute: () =>
+            {
+                VerifyPuzzle();
+            });
+            ClearPuzzleCommand = new Command(execute: () =>
+            {
+                ClearPuzzle();
+            });
+            IsLoading = false;
+            StatusText = "";
             Board = new BoardModel();
             BoardInitiation.InitBasicBoard(Board);
-            BoardInitiation.InitCommaSeperatedBoard(Board, TestInputs.UNSOLVED_BOARD_HARD);
+            var result = Puzzle_Image_Recognition.Sudoku_Normal.Parser.Solve(@"\sdsf\test.jpeg");
+            string test = "hi";
+           // BoardInitiation.InitCommaSeperatedBoard(Board, TestInputs.UNSOLVED_BOARD_EXTREME);
         }
 
-        public ICommand SolvePuzzleCommand { private set; get; }
+        public ICommand SolvePuzzleCommand { get; }
+        public ICommand VerifyPuzzleCommand { get; }
+        public ICommand ClearPuzzleCommand { get; }
 
         public void SolvePuzzle()
         {
             Thread thread = new Thread(() =>
             {
+                IsLoading = true;
+                StatusText = MagicStrings.SOLVING;
                 Board = Solver.PuzzleSolver(Board, GroupGetter.GetStandardGroups(Board));
-                //ValidSolution = PuzzleVerifier.VerifyPuzzle(Board) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED;
+                StatusText = PuzzleVerifier.VerifyPuzzle(Board) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED;
+                IsLoading = false;
             });
             thread.Start();
         }
 
         public void VerifyPuzzle()
         {
+            StatusText = MagicStrings.VERIFYING;
+            IsLoading = true;
             bool verify = PuzzleVerifier.VerifyPuzzle(Board);
-            //ValidSolution = verify ? MagicStrings.VALID_SOLUTION : MagicStrings.INVALID_SOLUTION;
+            IsLoading = false;
+            StatusText = verify ? MagicStrings.VALID_SOLUTION : MagicStrings.INVALID_SOLUTION;
+        }
+
+        public void ClearPuzzle()
+        {
+            BoardInitiation.ClearBoard(Board);
         }
     }
 }

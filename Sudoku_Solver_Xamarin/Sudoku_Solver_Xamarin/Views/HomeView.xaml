@@ -5,7 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:XamarinUniversity.Controls;assembly=XamU.Infrastructure"
              mc:Ignorable="d"
-             x:Class="Sudoku_Solver_Xamarin.Views.HomeView">
+             x:Class="Sudoku_Solver_Xamarin.Views.HomeView"
+             xmlns:localControls="clr-namespace:Sudoku_Solver_Xamarin.Controls;assembly=Sudoku_Solver_Xamarin"
+             xmlns:localBehaviors="clr-namespace:Sudoku_Solver_Xamarin.Behaviors;assembly=Sudoku_Solver_Xamarin">
     <ContentPage.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
             <Grid HorizontalOptions="FillAndExpand" Padding="0,0,0,0" ColumnSpacing="0" RowSpacing="0">
@@ -51,8 +53,13 @@
                         </DataTrigger>
                     </BoxView.Triggers>
                 </BoxView>
-                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding Path=CellValue, Mode=TwoWay}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 
-                       FontSize="20" BackgroundColor="DarkSlateGray" TextColor="White"/>
+                <localControls:SudokuSquareEntry Grid.Row="1" Grid.Column="1" Text="{Binding Path=CellValue, Mode=TwoWay}" HorizontalTextAlignment="Center" 
+                                         VerticalTextAlignment="Center" FontSize="20" BackgroundColor="DarkSlateGray" TextColor="White" MinimumWidthRequest="100" 
+                                         WidthRequest="100" Keyboard="Numeric">
+                    <localControls:SudokuSquareEntry.Behaviors>
+                        <localBehaviors:SudokuSquareEntryRestrictions />
+                    </localControls:SudokuSquareEntry.Behaviors>
+                </localControls:SudokuSquareEntry>
             </Grid>
         </DataTemplate>
 
@@ -73,18 +80,32 @@
     <ContentPage.Content>
         <Grid BackgroundColor="Gray" Padding="0,0,0,0" ColumnSpacing="0" RowSpacing="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="10" />
-                <RowDefinition Height="8*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding StatusText}" FontSize="Large" 
+                   VerticalOptions="Center" HorizontalOptions="Center"/>
             <controls:ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Board.BoardValues}" 
-                                   ItemTemplate="{DynamicResource DataTemplate_Level1}" Spacing="0" Padding="0,0,0,0"/>
-            <Button Grid.Row="2" Grid.Column="0" Text="Solve Puzzle" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
-            <Button Grid.Row="2" Grid.Column="1" Text="Verify Solution" Command="{Binding VerifyPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
+                                   ItemTemplate="{DynamicResource DataTemplate_Level1}" Spacing="0" Padding="10, 10, 10, 10"/>
+            <ActivityIndicator Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" IsRunning="{Binding IsLoading}"/>
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Text="&lt;"/>
+                <Button Grid.Column="1" Text="Clear" Command="{Binding ClearPuzzleCommand}"/>
+                <Button Grid.Column="2" Text="&gt;"/>
+            </Grid>
+            <Button Grid.Row="3" Grid.Column="0" Text="Solve Puzzle" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
+            <Button Grid.Row="3" Grid.Column="1" Text="Verify Solution" Command="{Binding VerifyPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

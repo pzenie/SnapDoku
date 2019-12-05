@@ -9,6 +9,9 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
+  
+  <PropertyGroup>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="4.3.0.991211" />
@@ -17,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Puzzle_Image_Recognition\Puzzle_Image_Recognition.csproj" />
     <ProjectReference Include="..\..\Sudoku_Solver\Sudoku_Solver.csproj" />
   </ItemGroup>
 
