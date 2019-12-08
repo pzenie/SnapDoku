@@ -68,7 +68,15 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             Board = new BoardModel();
             BoardInitiation.InitBasicBoard(Board);
             var result = Puzzle_Image_Recognition.Sudoku_Normal.Parser.Solve(@"\sdsf\test.jpeg");
-            string test = "hi";
+            var it = result.GetEnumerator();
+            for(int i = 0; i < Board.BoardValues.Count; i++)
+            {
+                for(int j = 0; j < Board.BoardValues[i].Count; j++)
+                {
+                    Board.BoardValues[i][j].CellValue = it.Current.ToString();
+                    it.MoveNext();
+                }
+            }
            // BoardInitiation.InitCommaSeperatedBoard(Board, TestInputs.UNSOLVED_BOARD_EXTREME);
         }
 

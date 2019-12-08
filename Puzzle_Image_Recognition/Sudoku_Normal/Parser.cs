@@ -60,10 +60,10 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
             var lines = Cv2.HoughLines(border, 1, Cv2.PI / 180, 200);
             MergeRelatedLines(lines, sudoku);
 
-            Vector2 topEdge = new Vector2(1000, 1000);
-            Vector2 bottomEdge = new Vector2(-1000, -1000);
-            Vector2 leftEdge = new Vector2(1000, 1000);
-            Vector2 rightEdge = new Vector2(-1000, -1000);
+            Vec2f topEdge = new Vec2f(1000, 1000);
+            Vec2f bottomEdge = new Vec2f(-1000, -1000);
+            Vec2f leftEdge = new Vec2f(1000, 1000);
+            Vec2f rightEdge = new Vec2f(-1000, -1000);
             double topYIntercept = 1000;
             double topXIntercept = 0;
             double bottomYIntercept = 0;
@@ -88,30 +88,30 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                 yIntercept = p / (Math.Cos(theta) * Math.Sin(theta));
                 if (theta > Cv2.PI * 80 / 180 && theta < Cv2.PI * 100 / 180)
                 {
-                    if (p < topEdge.X)
+                    if (p < topEdge.Item0)
                     {
-                        topEdge.X = current.Rho;
-                        topEdge.Y = current.Theta;
+                        topEdge.Item1 = current.Rho;
+                        topEdge.Item1 = current.Theta;
                     }
 
-                    if (p > bottomEdge.Y)
+                    if (p > bottomEdge.Item1)
                     {
-                        bottomEdge.X = current.Rho;
-                        bottomEdge.Y = current.Theta;
+                        bottomEdge.Item0 = current.Rho;
+                        bottomEdge.Item1 = current.Theta;
                     }
                 }
                 else if (theta < Cv2.PI * 10 / 180 || theta > Cv2.PI * 170 / 180)
                 {
                     if (xIntercept > rightXIntercept)
                     {
-                        rightEdge.X = current.Rho;
-                        rightEdge.Y = current.Theta;
+                        rightEdge.Item0 = current.Rho;
+                        rightEdge.Item1 = current.Theta;
                         rightXIntercept = xIntercept;
                     }
                     else if (xIntercept <= leftXIntercept)
                     {
-                        leftEdge.X = current.Rho;
-                        leftEdge.Y = current.Theta;
+                        leftEdge.Item0 = current.Rho;
+                        leftEdge.Item1 = current.Theta;
                         leftXIntercept = xIntercept;
                     }
                 }
@@ -123,36 +123,36 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
 
             int width = border.Size().Width;
 
-            if (leftEdge.Y != 0)
+            if (leftEdge.Item1 != 0)
             {
-                left1.X = 0; left1.Y = Convert.ToInt32(leftEdge.X / Math.Sin(leftEdge.Y));
-                left2.X = width; left2.Y = Convert.ToInt32(-left2.X / Math.Tan(leftEdge.Y) + left1.Y);
+                left1.X = 0; left1.Y = Convert.ToInt32(leftEdge.Item0 / Math.Sin(leftEdge.Item1));
+                left2.X = width; left2.Y = Convert.ToInt32(-left2.X / Math.Tan(leftEdge.Item1) + left1.Y);
             }
             else
             {
-                left1.Y = 0; left1.X = Convert.ToInt32(leftEdge.X / Math.Cos(leftEdge.Y));
-                left2.Y = height; left2.X = Convert.ToInt32(left1.X - height * Math.Tan(leftEdge.Y));
+                left1.Y = 0; left1.X = Convert.ToInt32(leftEdge.Item0 / Math.Cos(leftEdge.Item1));
+                left2.Y = height; left2.X = Convert.ToInt32(left1.X - height * Math.Tan(leftEdge.Item1));
 
             }
 
-            if (rightEdge.Y != 0)
+            if (rightEdge.Item1 != 0)
             {
-                right1.X = 0; right1.Y = Convert.ToInt32(rightEdge.X / Math.Sin(rightEdge.Y));
-                right2.X = width; right2.Y = Convert.ToInt32(-right2.X / Math.Tan(rightEdge.Y) + right1.Y);
+                right1.X = 0; right1.Y = Convert.ToInt32(rightEdge.Item0 / Math.Sin(rightEdge.Item1));
+                right2.X = width; right2.Y = Convert.ToInt32(-right2.X / Math.Tan(rightEdge.Item1) + right1.Y);
             }
             else
             {
-                right1.Y = 0; right1.X = Convert.ToInt32(rightEdge.X / Math.Cos(rightEdge.Y));
-                right2.Y = height; right2.X = Convert.ToInt32(right1.X - height * Math.Tan(rightEdge.Y));
+                right1.Y = 0; right1.X = Convert.ToInt32(rightEdge.Item0 / Math.Cos(rightEdge.Item1));
+                right2.Y = height; right2.X = Convert.ToInt32(right1.X - height * Math.Tan(rightEdge.Item1));
 
             }
 
-            bottom1.X = 0; bottom1.Y = Convert.ToInt32(bottomEdge.X / Math.Sin(bottomEdge.Y));
+            bottom1.X = 0; bottom1.Y = Convert.ToInt32(bottomEdge.Item0 / Math.Sin(bottomEdge.Item1));
 
-            bottom2.X = width; bottom2.Y = Convert.ToInt32(-bottom2.X / Math.Tan(bottomEdge.Y) + bottom1.Y);
+            bottom2.X = width; bottom2.Y = Convert.ToInt32(-bottom2.X / Math.Tan(bottomEdge.Item1) + bottom1.Y);
 
-            top1.X = 0; top1.Y = Convert.ToInt32(topEdge.X / Math.Sin(topEdge.Y));
-            top2.X = width; top2.Y = Convert.ToInt32(-top2.X / Math.Tan(topEdge.Y) + top1.Y);
+            top1.X = 0; top1.Y = Convert.ToInt32(topEdge.Item0 / Math.Sin(topEdge.Item1));
+            top2.X = width; top2.Y = Convert.ToInt32(-top2.X / Math.Tan(topEdge.Item1) + top1.Y);
 
             double leftA = left2.Y - left1.Y;
             double leftB = left1.X - left2.X;
@@ -282,13 +282,19 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                         Cv2.Resize(regionOfInterest, resized, new Size(16, 16), 0, 0, InterpolationFlags.Nearest);
                         resized.ConvertTo(resized, MatType.CV_32FC1, 1 / 255);
                         resized.Reshape(1, 1);
-                        Mat final1 = new Mat(new Size(size, 1), MatType.CV_32FC1);
-                        for (int k = 0; k < size; k++)
+                        int testSize = resized.Size().Height * resized.Size().Width;
+                        Mat final1 = new Mat(new Size(testSize, 1), MatType.CV_32FC1);
+                        for (int k = 0; k < testSize; k++)
                         {
                             final1.Set(k, resized.At<float>(k));
                         }
                         int resultPLZ = dr.Clasify(final1.Reshape(1, 1), new Mat());
                         test.Add(resultPLZ);
+                    final1.Dispose();
+                    resized.Dispose();
+                    regionOfInterest.Dispose();
+                    numberBox.Dispose();
+                    threshold.Dispose();
                     //}
                 }
             }
