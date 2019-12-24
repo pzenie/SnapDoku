@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.902
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku Solver WPF", "Sudoku Solver WPF\Sudoku Solver WPF.csproj", "{265C961C-7253-4F07-B3E2-1A0A3281BD6D}"
 EndProject
@@ -15,7 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku_Solver_Xamarin.iOS",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sudoku_Solver_Xamarin", "Sudoku_Solver_Xamarin\Sudoku_Solver_Xamarin\Sudoku_Solver_Xamarin.csproj", "{41B20793-C4A8-4982-8378-5F83556D2EB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Puzzle_Image_Recognition", "Puzzle_Image_Recognition\Puzzle_Image_Recognition.csproj", "{47034AC6-8B2C-4B3B-A614-654D57E274FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Puzzle_Image_Recognition", "Puzzle_Image_Recognition\Puzzle_Image_Recognition.csproj", "{47034AC6-8B2C-4B3B-A614-654D57E274FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageTester", "ImageTester\ImageTester.csproj", "{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +117,18 @@ Global
 		{47034AC6-8B2C-4B3B-A614-654D57E274FF}.Release|iPhone.Build.0 = Release|Any CPU
 		{47034AC6-8B2C-4B3B-A614-654D57E274FF}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{47034AC6-8B2C-4B3B-A614-654D57E274FF}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Release|iPhone.Build.0 = Release|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{32A6A302-9CFC-4CB1-84C2-CB0D9D67B226}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

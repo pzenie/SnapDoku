@@ -260,8 +260,8 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                     int y = boxSize * j;
                     Mat numberBox = new Mat(undistortedThreshed, new Rect(x, y, boxSize, boxSize));
 
-                    //if (Cv2.CountNonZero(numberBox) < 200)
-                    //{
+                    if (Cv2.CountNonZero(numberBox) < 200)
+                    {
                         Mat threshold = numberBox.Clone();
                         Cv2.FindContours(threshold, out Point[][] contours2, out HierarchyIndex[] h, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
                         int areaPrv = 0;
@@ -290,12 +290,12 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                         }
                         int resultPLZ = dr.Clasify(final1.Reshape(1, 1), new Mat());
                         test.Add(resultPLZ);
-                    final1.Dispose();
-                    resized.Dispose();
-                    regionOfInterest.Dispose();
-                    numberBox.Dispose();
-                    threshold.Dispose();
-                    //}
+                        final1.Dispose();
+                        resized.Dispose();
+                        regionOfInterest.Dispose();
+                        numberBox.Dispose();
+                        threshold.Dispose();
+                    }
                 }
             }
             return test;
