@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using OpenCvSharp;
 
 namespace Puzzle_Image_Recognition.Sudoku_Normal
@@ -13,7 +14,7 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
     {
         public static List<int> Solve(string filePath)
         {
-            Mat sudoku = Cv2.ImDecode(Properties.Resources.test, ImreadModes.GrayScale);
+            Mat sudoku = Cv2.ImDecode(Properties.Resources.test, ImreadModes.Grayscale);
             //Mat sudoku = new Mat(filePath, ImreadModes.GrayScale);
             Mat border = new Mat(sudoku.Size(), MatType.CV_8UC1);
             Mat kernal = new Mat(3, 3, MatType.CV_8UC1, new byte[] { 0, 1, 0, 1, 1, 1, 0, 1, 0 });
@@ -21,41 +22,51 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
             Cv2.GaussianBlur(sudoku, sudoku, new Size(11, 11), 0);
             Cv2.AdaptiveThreshold(sudoku, border, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 5, 2);
             Cv2.BitwiseNot(border, border);
-            Cv2.Dilate(sudoku, border, kernal);
+            Cv2.Dilate(border, border, kernal);
 
             int count = 0;
             int max = -1;
+            Cv2.Resize(border, border, new Size(500, 500));
+            Cv2.ImShow("test", border);
+            Cv2.WaitKey();
+            /* Point maxPt = new Point();
+             for (int y = 0; y < border.Size().Height; y++)
+             {
+                 for (int x = 0; x < border.Size().Width; x++)
+                 {
+                     if (border.Get<byte>(y, x) >= 128)
+                     {
+                         //Console.WriteLine("x: " + x + " y: " + y + " pixel: " + border.Get<byte>(y, x));
+                         int area = Cv2.FloodFill(border, new Point(x, y), new Scalar(64));
+                         if (area > max)
+                         {
+                             maxPt = new Point(x, y);
+                             max = area;
+                         }
+                     }
+                 }
+             }
 
-            Point maxPt = new Point();
-            for (int y = 0; y < border.Size().Height; y++)
-            {
-                for (int x = 0; x < border.Size().Width; x++)
-                {
-                    if (border.At<int>(y, x) >= 128)
-                    {
+             Cv2.FloodFill(border, maxPt, new Scalar(255));
+             for (int y = 0; y < border.Size().Height; y++)
+             {
+                 for (int x = 0; x < border.Size().Width; x++)
+                 {
+                     if (border.Get<byte>(y, x) == 64 && x != maxPt.X && y != maxPt.Y)
+                     {
+                         int area = Cv2.FloodFill(border, new Point(x, y), new Scalar(0));
+                     }
+                 }
+             }
+             Cv2.Erode(border, border, kernal);
+             */
+            Point[][] contours;
+            HierarchyIndex[] hierarchy;
+            Cv2.FindContours(border, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
 
-                        int area = Cv2.FloodFill(border, new Point(x, y), new Scalar(0, 0, 64));
-
-                        if (area > max)
-                        {
-                            maxPt = new Point(x, y);
-                            max = area;
-                        }
-                    }
-                }
-            }
-            Cv2.FloodFill(border, maxPt, new Scalar(255, 255, 255));
-            for (int y = 0; y < border.Size().Height; y++)
-            {
-                for (int x = 0; x < border.Size().Width; x++)
-                {
-                    if (border.At<int>(y, x) == 64 && x != maxPt.X && y != maxPt.Y)
-                    {
-                        int area = Cv2.FloodFill(border, new Point(x, y), new Scalar(0, 0, 0));
-                    }
-                }
-            }
-            Cv2.Erode(border, border, kernal);
+            Cv2.Resize(border, border, new Size(500, 500));
+            Cv2.ImShow("test", border);
+            Cv2.WaitKey();
 
             var lines = Cv2.HoughLines(border, 1, Cv2.PI / 180, 200);
             MergeRelatedLines(lines, sudoku);
@@ -214,11 +225,12 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
 
             Mat undistorted = new Mat(new Size(maxLength, maxLength), MatType.CV_8UC1);
             Cv2.WarpPerspective(sudoku, undistorted, Cv2.GetPerspectiveTransform(src, dst), new Size(maxLength, maxLength));
-
+            Cv2.Resize(undistorted, undistorted, new Size(500, 500));
+            Cv2.ImShow("test", undistorted);
+            Cv2.WaitKey();
             Mat undistortedThreshed = undistorted.Clone();
             Cv2.AdaptiveThreshold(undistorted, undistortedThreshed, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.BinaryInv, 101, 1);
 
-            
             MemoryStream s = new MemoryStream(Properties.Resources.digits);
             ZipArchive z = new ZipArchive(s);
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -228,7 +240,9 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
             }
             catch(Exception e)
             { /*Prlly just means the file already exists */ }
+            //Mat imageTest = Cv2.ImDecode(Properties.Resources.test, ImreadModes.AnyColor);
 
+            
             DigitRecognizer dr = new DigitRecognizer();
             dr.Train(path + "/digits");
 
@@ -248,7 +262,6 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
             {
                 test.Add(results.At<int>(i));
             }*/
-
             List<Mat> boxes = new List<Mat>();
             int boxSize = maxLength / 9;
             int size = 16 * 16;

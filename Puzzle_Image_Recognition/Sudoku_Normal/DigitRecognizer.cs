@@ -41,7 +41,7 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                 float number = Convert.ToInt32(trainFolders[i].Name);
                 foreach (FileInfo file in trainFolders[i].GetFiles())
                 {
-                    Mat img = Cv2.ImRead(file.FullName, ImreadModes.GrayScale);
+                    Mat img = Cv2.ImRead(file.FullName, ImreadModes.Grayscale);
                     Cv2.Threshold(img, img, 200, 255, ThresholdTypes.Otsu);
                     img.ConvertTo(img, MatType.CV_32FC1, 1/255);
                     Cv2.Resize(img, img, new Size(16, 16), 0, 0, InterpolationFlags.Nearest);

@@ -12,7 +12,7 @@ namespace ImageTester
                 foreach (int i in result)
                 {
                     Console.Write(i + ",");
-                } 
+                }
             }
             catch(Exception e)
             {
