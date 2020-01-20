@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
 using OpenCvSharp;
 using OpenCvSharp.ML;
 
 namespace Puzzle_Image_Recognition.Sudoku_Normal
 {
-    class DigitRecognizer
+    public class ImageInfo
+    {
+        public Mat Image { set; get; }
+        public int ImageGroupId { set; get; }
+    }
+    public class DigitRecognizer
     {
         private KNearest knn;
 
@@ -22,45 +26,98 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
 
         public bool Train(string trainPath)
         {
-            DirectoryInfo trainDirectory = new DirectoryInfo(trainPath);
-            DirectoryInfo[] trainFolders = trainDirectory.GetDirectories();
-
-            if(trainFolders.Length == 0)
+            var trainingImages = ReadTrainingImages(trainPath);
+            var samples = new Mat();
+            foreach (var trainingImage in trainingImages)
             {
-                return false;
+                samples.PushBack(trainingImage.Image);
             }
 
-            int num = 797;
-            int size = 16 * 16;
-            int counter = 0;
-            Mat trainingData = new Mat(new Size(size, num), MatType.CV_32FC1);
-            Mat responses = new Mat(new Size(1, num), MatType.CV_32FC1);
+            var labels = trainingImages.Select(x => x.ImageGroupId).ToArray();
+            var responses = new Mat(labels.Length, 1, MatType.CV_32SC1, labels);
+            var tmp = responses.Reshape(1, 1);
+            var responseFloat = new Mat();
+            tmp.ConvertTo(responseFloat, MatType.CV_32FC1);
 
-            for(int i = 0; i <= 9; i++)
-            {
-                float number = Convert.ToInt32(trainFolders[i].Name);
-                foreach (FileInfo file in trainFolders[i].GetFiles())
-                {
-                    Mat img = Cv2.ImRead(file.FullName, ImreadModes.Grayscale);
-                    Cv2.Threshold(img, img, 200, 255, ThresholdTypes.Otsu);
-                    img.ConvertTo(img, MatType.CV_32FC1, 1/255);
-                    Cv2.Resize(img, img, new Size(16, 16), 0, 0, InterpolationFlags.Nearest);
-                    img.Reshape(1, 1);
-                    for (int j = 0; j < size; j++)
-                    {
-                        trainingData.Set<float>(counter, j, img.At<float>(j));
-                    }
-                    //Cv2.Resize(trainingData, trainingData, new Size(500, 500));
-                    //Cv2.ImShow("test", trainingData);
-                    //Cv2.WaitKey();
-                    responses.Set<float>(counter, number);
-                    counter++;
-                }
-            }
-
-            knn.Train(trainingData, SampleTypes.RowSample, responses);
+            knn.Train(samples, SampleTypes.RowSample, responseFloat);
             return true;
         }
+
+        public IList<ImageInfo> ReadTrainingImages(string path)
+        {
+            var images = new List<ImageInfo>();
+
+            foreach(var dir in new DirectoryInfo(path).GetDirectories())
+            {
+                var groupId = int.Parse(dir.Name);
+                foreach(var imageFile in dir.GetFiles())
+                {
+                    var image = ProcessTrainingImage2(new Mat(imageFile.FullName, ImreadModes.Grayscale), groupId);
+
+                    if (image == null)
+                    {
+                        continue;
+                    }
+                    images.Add(new ImageInfo
+                    {
+                        Image = image,
+                        ImageGroupId = groupId
+                    });
+                }
+            }
+            return images;
+        }
+        private static Mat ProcessTrainingImage2(Mat img, int groupId)
+        {
+            Cv2.Threshold(img, img, 200, 255, ThresholdTypes.Otsu);
+            img.ConvertTo(img, MatType.CV_32FC1, 1.0 / 255.0);
+            Cv2.Resize(img, img, new Size(16, 16), 0, 0, InterpolationFlags.LinearExact);
+            /*if (groupId > 0)
+            {
+                Cv2.ImShow("test", img);
+                Cv2.WaitKey();
+            }*/
+            img = img.Reshape(1, 1);
+            return img;
+        }
+        /*public Mat ProcessTrainingImage(Mat gray, int groupId)
+        {
+            var threshImage = new Mat();
+            Cv2.Threshold(gray, threshImage, 80, 255, ThresholdTypes.BinaryInv); // Threshold to find contour
+
+            Cv2.FindContours(
+                threshImage,
+                out Point[][] contours,
+                out HierarchyIndex[] hierarchyIndexes,
+                mode: RetrievalModes.CComp,
+                method: ContourApproximationModes.ApproxSimple);
+
+            if (contours.Length == 0)
+            {
+                return null;
+            }
+
+            Mat result = null;
+
+            var contourIndex = 0;
+            while ((contourIndex >= 0))
+            {
+                var contour = contours[contourIndex];
+
+                var boundingRect = Cv2.BoundingRect(contour);
+                var roi = new Mat(threshImage, boundingRect);
+
+                var resizedImage = new Mat();
+                var resizedImageFloat = new Mat();
+                Cv2.Resize(roi, resizedImage, new Size(16, 16));
+                resizedImage.ConvertTo(resizedImageFloat, MatType.CV_32FC1);
+                result = resizedImageFloat.Reshape(1, 1);
+
+                contourIndex = hierarchyIndexes[contourIndex].Next;
+            }
+
+            return result;
+        }*/
 
         public int Clasify(Mat box, OutputArray resultAsArray)
         {

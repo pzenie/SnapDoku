@@ -40,7 +40,6 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
             dr.Train(path + "/digits");
 
             int boxSize = maxLength / 9;
-            int size = 16 * 16;
             List<int> test = new List<int>();
 
             for (int i = 0; i < 9; i++)
@@ -50,19 +49,15 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                     int x = boxSize * i;
                     int y = boxSize * j;
                     Mat numberBox = new Mat(undistortedPrepped, new Rect(x, y, boxSize, boxSize));
+                    numberBox = new Mat(numberBox, new Rect(boxSize/4, boxSize/4, boxSize/2, boxSize/2));
+
                     Cv2.Threshold(numberBox, numberBox, 200, 255, ThresholdTypes.Otsu);
-                    numberBox.ConvertTo(numberBox, MatType.CV_32FC1, 1 / 255);
-                    Cv2.Resize(numberBox, numberBox, new Size(16, 16), 0, 0, InterpolationFlags.Nearest);
-                    numberBox.Reshape(1, 1);
-                    Mat trainingData = new Mat(new Size(size, 1), MatType.CV_32FC1);
-                    for(int k = 0; k < size; k++)
-                    {
-                        trainingData.Set(k, numberBox.Get<float>(k));
-                    }
-                    //Cv2.Resize(numberBox, numberBox, new Size(500, 500));
-                    //Cv2.ImShow("test", numberBox);
-                    //Cv2.WaitKey();
-                    int resultClassify = dr.Clasify(trainingData, new Mat());
+                    numberBox.ConvertTo(numberBox, MatType.CV_32FC1, 1.0 / 255.0);
+                    Cv2.Resize(numberBox, numberBox, new Size(16, 16), 0, 0, InterpolationFlags.LinearExact);
+
+                    numberBox = numberBox.Reshape(1, 1);
+
+                    int resultClassify = dr.Clasify(numberBox, new Mat());
                     test.Add(resultClassify);
                 }
             }
