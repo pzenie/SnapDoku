@@ -17,9 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenCvSharp4" Version="4.2.0.20200108" />
-    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.2.0.20200108" />
-    <PackageReference Include="OpenCvSharp4.Windows" Version="4.2.0.20200108" />
+    <PackageReference Include="Kawaian.OpenCVSharp" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

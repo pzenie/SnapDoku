@@ -52,7 +52,7 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                 var groupId = int.Parse(dir.Name);
                 foreach(var imageFile in dir.GetFiles())
                 {
-                    var image = ProcessTrainingImage2(new Mat(imageFile.FullName, ImreadModes.Grayscale), groupId);
+                    var image = ProcessTrainingImage2(new Mat(imageFile.FullName, ImreadModes.GrayScale), groupId);
 
                     if (image == null)
                     {
@@ -69,10 +69,10 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
         }
         private static Mat ProcessTrainingImage2(Mat img, int groupId)
         {
-            Cv2.Threshold(img, img, 200, 255, ThresholdTypes.Otsu);
+            //Cv2.Threshold(img, img, 200, 255, ThresholdTypes.Otsu);
             img.ConvertTo(img, MatType.CV_32FC1, 1.0 / 255.0);
-            Cv2.Resize(img, img, new Size(16, 16), 0, 0, InterpolationFlags.LinearExact);
-            /*if (groupId > 0)
+            Cv2.Resize(img, img, new Size(16, 16), 0, 0, InterpolationFlags.Linear);
+            /*if (groupId == 1)
             {
                 Cv2.ImShow("test", img);
                 Cv2.WaitKey();

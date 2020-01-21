@@ -12,10 +12,9 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
 {
     public static class Parser
     {
-        public static List<int> Solve(string filePath)
+        public static List<int> Solve(byte[] file)
         {
-            Mat sudoku = Cv2.ImDecode(Properties.Resources.test, ImreadModes.Grayscale);
-            //Mat sudoku = new Mat(filePath, ImreadModes.GrayScale);
+            Mat sudoku = Cv2.ImDecode(file, ImreadModes.GrayScale);
             Mat border = sudoku.Clone();
             border = PrepImage(border);
             Point[] corners = FindCorners(border);
@@ -34,7 +33,8 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                 z.ExtractToDirectory(path);
             }
             catch(Exception e)
-            { /*Prlly just means the file already exists */ }
+            {
+                string sasdasd = "asd";/*Prlly just means the file already exists */ }
             
             DigitRecognizer dr = new DigitRecognizer();
             dr.Train(path + "/digits");
@@ -49,11 +49,11 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                     int x = boxSize * i;
                     int y = boxSize * j;
                     Mat numberBox = new Mat(undistortedPrepped, new Rect(x, y, boxSize, boxSize));
-                    numberBox = new Mat(numberBox, new Rect(boxSize/4, boxSize/4, boxSize/2, boxSize/2));
+                    numberBox = new Mat(numberBox, new Rect(boxSize/4, boxSize/5, boxSize/2, 2*(boxSize/3)));
 
                     Cv2.Threshold(numberBox, numberBox, 200, 255, ThresholdTypes.Otsu);
                     numberBox.ConvertTo(numberBox, MatType.CV_32FC1, 1.0 / 255.0);
-                    Cv2.Resize(numberBox, numberBox, new Size(16, 16), 0, 0, InterpolationFlags.LinearExact);
+                    Cv2.Resize(numberBox, numberBox, new Size(16, 16), 0, 0, InterpolationFlags.Linear);
 
                     numberBox = numberBox.Reshape(1, 1);
 
