@@ -46,24 +46,19 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
         /// <returns>List of classified digits from a sudoku board in the image</returns>
         public int[,] Solve(byte[] file)
         {
-            Mat sudoku = Cv2.ImDecode(file, ImreadModes.Grayscale);
+            Mat sudoku = Cv2.ImDecode(file, ImreadModes.GrayScale);
             Mat border = sudoku.Clone();
             border = PrepImage(border, true);
             Point[] corners = FindCorners(border);
 
-            /*Cv2.CvtColor(border, border, ColorConversionCodes.GRAY2BGR);
-            Cv2.DrawContours(border, new Point[][] { corners }, -1, new Scalar(255, 255, 0), 5);
-            Cv2.Resize(border, border, new Size(500, 500));
-            Cv2.ImShow("Test", border);
-            Cv2.WaitKey();*/
-
             Mat undistorted = CropAndWarp(sudoku, corners);
 
-            //Cv2.Resize(undistorted, undistorted, new Size(500, 500));
-            //Cv2.ImShow("Test", undistorted);
-            //Cv2.WaitKey();
+            Mat undistortedPrepped = PrepImage(undistorted, true);
 
-            Mat undistortedPrepped = PrepImage(undistorted, false);
+            Cv2.FindContours(undistortedPrepped, out Point[][] contours, out _, RetrievalModes.CComp, ContourApproximationModes.ApproxSimple);
+
+            Point[] contour = FindLargestContour(contours);
+            Cv2.FloodFill(undistortedPrepped, contour[0], new Scalar(0, 0, 0));
 
             int boxHeight = undistortedPrepped.Size().Height / 9;
             int boxWidth = undistortedPrepped.Size().Width / 9;
@@ -101,42 +96,25 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
         /// </summary>
         /// <param name="board">Image of the baord</param>
         /// <param name="boxSize">The size of each box in the image</param>
-        /// <returns></returns>
+        /// <returns>List of ints representing the parsed digits from the image</returns>
         private List<int> ClassifyBoard(Mat board, List<Rect> boxes)
         {
             List<int> result = new List<int>();
-            List<Mat> correctedDigitBoxes = new List<Mat>();
             foreach(Rect box in boxes)
             {
-                correctedDigitBoxes.Add(ExtractAndCenterBox(board, box));
-            }
-            foreach(Mat digit in correctedDigitBoxes)
-            {
+                Mat digit = ExtractAndCenterBox(board, box);
                 int resultClassify = dr.Clasify(digit, new Mat());
                 result.Add(resultClassify);
             }
-            /*for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    int x = boxWidth * i;
-                    int y = boxHeight * j;
-                    Mat numberBox = new Mat(board, new Rect(x, y, boxWidth, boxHeight));
-                    //numberBox = new Mat(numberBox, new Rect(boxSize / 4, boxSize / 5, boxSize / 2, 2 * (boxSize / 3)));
-
-                    Cv2.ImShow("Test1", numberBox);
-                    Cv2.WaitKey();
-
-                    Cv2.Threshold(numberBox, numberBox, 200, 255, ThresholdTypes.Otsu);
-                    numberBox.ConvertTo(numberBox, MatType.CV_32FC1, 1.0 / 255.0);
-                    Cv2.Resize(numberBox, numberBox, new Size(16, 16), 0, 0, InterpolationFlags.Linear);
-
-                    numberBox = numberBox.Reshape(1, 1);
-                }
-            }*/
             return result;
         }
 
+        /// <summary>
+        /// Finds the bounding box of the digit within the rect if the box contains one and return cropped and formatted verrsion
+        /// </summary>
+        /// <param name="board">Image of board</param>
+        /// <param name="rect">area to check for digit</param>
+        /// <returns>Formmated box</returns>
         private Mat ExtractAndCenterBox(Mat board, Rect rect)
         {
             Mat digit = new Mat(board, rect);
@@ -147,7 +125,7 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
 
             Cv2.Threshold(numberBox, numberBox, 200, 255, ThresholdTypes.Otsu);
             numberBox.ConvertTo(numberBox, MatType.CV_32FC1, 1.0 / 255.0);
-            Cv2.Resize(numberBox, numberBox, new Size(16, 16), 0, 0, InterpolationFlags.Linear);
+            Cv2.Resize(numberBox, numberBox, new Size(16, 16), 0, 0, InterpolationFlags.Nearest);
 
 
             numberBox = numberBox.Reshape(1, 1);
@@ -155,46 +133,42 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
             return numberBox;
         }
 
+        /// <summary>
+        /// Zooms an image of a box onto the digit if there's one present
+        /// </summary>
+        /// <param name="digit">The box with the possible digit to zoom in on</param>
+        /// <returns>The zoomed in image</returns>
         private Rect FindLargestFeature(Mat digit)
         {
-            int x = digit.Size().Width / 20;
-            int width = digit.Size().Width - (2 * x);
-            digit = new Mat(digit, new Rect(x, 0, width, digit.Size().Height));
-
-           /* Cv2.ImShow("asda", digit);
-            Cv2.WaitKey();*/
-
-            Cv2.FindContours(digit, out Point[][] contours, out HierarchyIndex[] hierarchy, RetrievalModes.CComp, ContourApproximationModes.ApproxSimple);
-
-            if (contours.Length > 0)
+            if (digit.CountNonZero() > 200) // ignore boxes without digits and just noise
             {
-                Point[] contour = FindLargestContour(contours);
-                /*Mat test = new Mat();
-                Cv2.CvtColor(digit, test, ColorConversionCodes.GRAY2BGR);
-                Cv2.DrawContours(test, new Point[][] { contour }, -1, new Scalar(255, 255, 0), 2);
-                Cv2.ImShow("te", test);
-                Cv2.WaitKey();*/
-                if (contour != null)
-                {
-                    Rect bounding = Cv2.BoundingRect(contour);
-                    if (bounding.Width < bounding.Height) //Make image square with digit at center
-                    {
-                        int difference = bounding.Height - bounding.Width;
-                        bounding.X -= difference / 2;
-                        if (bounding.X < 0) bounding.X = 0;
-                        bounding.Width = bounding.Height;
-                    }
-                    else if (bounding.Width > bounding.Height) //Make image square with digit at center
-                    {
-                        int difference = bounding.Width - bounding.Height;
-                        bounding.Y -= difference / 2;
-                        if (bounding.Y < 0) bounding.Y = 0;
-                        bounding.Height = bounding.Width;
-                    }
-                    while (bounding.X + bounding.Width > digit.Cols) bounding.Width--;
-                    while (bounding.Y + bounding.Height > digit.Rows) bounding.Height--;
+                Cv2.FindContours(digit, out Point[][] contours, out _, RetrievalModes.CComp, ContourApproximationModes.ApproxSimple);
 
-                    return bounding;
+                if (contours.Length > 0)
+                {
+                    Point[] contour = FindLargestContour(contours);
+                    if (contour != null)
+                    {
+                        Rect bounding = Cv2.BoundingRect(contour);
+                        if (bounding.Width < bounding.Height) //Make image square with digit at center
+                        {
+                            int difference = bounding.Height - bounding.Width;
+                            bounding.X -= difference / 2;
+                            if (bounding.X < 0) bounding.X = 0;
+                            bounding.Width = bounding.Height;
+                        }
+                        else if (bounding.Width > bounding.Height) //Make image square with digit at center
+                        {
+                            int difference = bounding.Width - bounding.Height;
+                            bounding.Y -= difference / 2;
+                            if (bounding.Y < 0) bounding.Y = 0;
+                            bounding.Height = bounding.Width;
+                        }
+                        while (bounding.X + bounding.Width > digit.Cols) bounding.Width--;
+                        while (bounding.Y + bounding.Height > digit.Rows) bounding.Height--;
+
+                        return bounding;
+                    }
                 }
             }
             return new Rect(0, 0, digit.Size().Width, digit.Size().Height);

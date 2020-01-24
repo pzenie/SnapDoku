@@ -61,7 +61,7 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                 var label = int.Parse(dir.Name);
                 foreach(var imageFile in dir.GetFiles())
                 {
-                    var image = ProcessTrainingImage(new Mat(imageFile.FullName, ImreadModes.Grayscale));
+                    var image = ProcessTrainingImage(new Mat(imageFile.FullName, ImreadModes.GrayScale));
 
                     if (image == null)
                     {
@@ -80,9 +80,8 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
         /// <returns>The proccessed image</returns>
         private static Mat ProcessTrainingImage(Mat img)
         {
-            //Cv2.Threshold(img, img, 200, 255, ThresholdTypes.Otsu);
             img.ConvertTo(img, MatType.CV_32FC1, 1.0 / 255.0);
-            Cv2.Resize(img, img, new Size(16, 16), 0, 0, InterpolationFlags.Linear);
+            Cv2.Resize(img, img, new Size(16, 16), 0, 0, InterpolationFlags.Nearest);
             img = img.Reshape(1, 1);
             return img;
         }

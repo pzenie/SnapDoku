@@ -7,6 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Plugin.Permissions;
+using Sudoku_Solver_Xamarin.Controls;
 
 namespace Sudoku_Solver_Xamarin.Droid
 {

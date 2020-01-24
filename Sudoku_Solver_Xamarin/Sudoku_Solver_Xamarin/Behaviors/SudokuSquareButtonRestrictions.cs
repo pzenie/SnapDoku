@@ -1,26 +1,11 @@
 ﻿using Sudoku_Solver_Xamarin.Controls;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xamarin.Forms;
 
 namespace Sudoku_Solver_Xamarin.Behaviors
 {
-    class SudokuSquareEntryRestrictions : Behavior<SudokuSquareEntry>
+    class SudokuSquareButtonRestrictions : Behavior<SudokuSquareButton>
     {
-        protected override void OnAttachedTo(SudokuSquareEntry entry)
-        {
-            entry.TextChanged += OnEntryTextChanged;
-            base.OnAttachedTo(entry);
-        }
-
-        protected override void OnDetachingFrom(SudokuSquareEntry entry)
-        {
-            entry.TextChanged -= OnEntryTextChanged;
-            base.OnDetachingFrom(entry);
-        }
-
         private static void OnEntryTextChanged(object sender, TextChangedEventArgs args)
         {
 

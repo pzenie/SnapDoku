@@ -2,7 +2,7 @@
 
 namespace Sudoku_Solver_Xamarin.Controls
 {
-    public class SudokuSquareEntry : Entry
+    public class SudokuSquareButton : Button
     {
     }
 }

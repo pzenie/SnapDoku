@@ -53,13 +53,9 @@
                         </DataTrigger>
                     </BoxView.Triggers>
                 </BoxView>
-                <localControls:SudokuSquareEntry Grid.Row="1" Grid.Column="1" Text="{Binding Path=CellValue, Mode=TwoWay}" HorizontalTextAlignment="Center" 
-                                         VerticalTextAlignment="Center" FontSize="20" BackgroundColor="DarkSlateGray" TextColor="White" MinimumWidthRequest="100" 
-                                         WidthRequest="100" Keyboard="Numeric">
-                    <localControls:SudokuSquareEntry.Behaviors>
-                        <localBehaviors:SudokuSquareEntryRestrictions />
-                    </localControls:SudokuSquareEntry.Behaviors>
-                </localControls:SudokuSquareEntry>
+                <Button Grid.Row="1" Grid.Column="1" Text="{Binding Path=CellValue, Mode=TwoWay}" FontSize="20" 
+                        BackgroundColor="DarkSlateGray" TextColor="White" MinimumWidthRequest="100" WidthRequest="100">
+                </Button>
             </Grid>
         </DataTemplate>
 
@@ -75,39 +71,77 @@
             <Setter Property="BorderColor" Value="Black"/>
             <Setter Property="BorderWidth" Value="1"/>
             <Setter Property="BackgroundColor" Value="#260f0f"/>
+            <Setter Property="CornerRadius" Value="40"/>
+            <Setter Property="HorizontalOptions" Value="Center"/>
+            <Setter Property="WidthRequest" Value="120"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+            <Setter Property="HeightRequest" Value="50"/>
+        </Style>
+        <Style x:Key="Digit_Button" TargetType="Button">
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="BorderColor" Value="Black"/>
+            <Setter Property="BorderWidth" Value="1"/>
+            <Setter Property="BackgroundColor" Value="DarkGreen"/>
+            <Setter Property="CornerRadius" Value="45"/>
+            <Setter Property="WidthRequest" Value="90"/>
+            <Setter Property="VerticalOptions" Value="CenterAndExpand"/>
+            <Setter Property="HeightRequest" Value="135"/>
         </Style>
     </ContentPage.Resources>
     <ContentPage.Content>
         <Grid BackgroundColor="Gray" Padding="0,0,0,0" ColumnSpacing="0" RowSpacing="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="8*"/>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="2*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding StatusText}" FontSize="Large" 
+            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding StatusText}" FontSize="Large" 
                    VerticalOptions="Center" HorizontalOptions="Center"/>
-            <controls:ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Board.BoardValues}" 
+            <controls:ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding Board.BoardValues}" 
                                    ItemTemplate="{DynamicResource DataTemplate_Level1}" Spacing="0" Padding="10, 10, 10, 10"/>
             <ActivityIndicator Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" IsRunning="{Binding IsLoading}"/>
-            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Text="&lt;"/>
-                <Button Grid.Column="1" Text="Clear" Command="{Binding ClearPuzzleCommand}"/>
-                <Button Grid.Column="2" Text="Photo" Command="{Binding TakeImageAndParseCommand}"/>
-                <Button Grid.Column="3" Text="&gt;"/>
+                <Button Grid.Column="0" Text="Clear Puzzle" WidthRequest="160" Command="{Binding ClearPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
+                <Button Grid.Column="1" Text="New Puzzle" WidthRequest="160" Command="{Binding NewPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
             </Grid>
-            <Button Grid.Row="3" Grid.Column="0" Text="Solve Puzzle" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
-            <Button Grid.Row="3" Grid.Column="1" Text="Verify Solution" Command="{Binding VerifyPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
+            <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="1" Grid.Column="1" Text="1" Style="{DynamicResource Key=Digit_Button}"/>
+                <Button Grid.Row="1" Grid.Column="2" Text="2" Style="{DynamicResource Key=Digit_Button}"/>
+                <Button Grid.Row="1" Grid.Column="3" Text="3" Style="{DynamicResource Key=Digit_Button}"/>
+                <Button Grid.Row="2" Grid.Column="1" Text="4" Style="{DynamicResource Key=Digit_Button}"/>
+                <Button Grid.Row="2" Grid.Column="2" Text="5" Style="{DynamicResource Key=Digit_Button}"/>
+                <Button Grid.Row="2" Grid.Column="3" Text="6" Style="{DynamicResource Key=Digit_Button}"/>
+                <Button Grid.Row="3" Grid.Column="1" Text="7" Style="{DynamicResource Key=Digit_Button}"/>
+                <Button Grid.Row="3" Grid.Column="2" Text="8" Style="{DynamicResource Key=Digit_Button}"/>
+                <Button Grid.Row="3" Grid.Column="3" Text="9" Style="{DynamicResource Key=Digit_Button}"/>
+            </Grid>
+            <Button Grid.Row="2" Grid.Column="0" Text="Solve" BackgroundColor="Black" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
+            <Button Grid.Row="2" Grid.Column="1" Text="Upload Puzzle" Command="{Binding TakeImageAndParseCommand}" Style="{DynamicResource Key=Main_Button}"/>
+            <Button Grid.Row="2" Grid.Column="2" Text="Verify" Command="{Binding VerifyPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

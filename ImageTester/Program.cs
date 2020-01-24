@@ -15,7 +15,7 @@ namespace ImageTester
             try
             {
                 SudokuImageParser p = new SudokuImageParser();
-                int[,] board = p.Solve(Properties.Resources.test3);
+                int[,] board = p.Solve(Properties.Resources.test4);
                 Console.WriteLine();
                 for(int i = 0; i < 9; i++)
                 {

@@ -18,6 +18,7 @@ namespace Sudoku_Solver_Xamarin.ViewModels
     class HomeViewModel : PropertyChangedBase
     {
         private readonly SudokuImageParser parser;
+        private int curPuzzle = 0;
 
         private BoardModel boardPrivate;
         public BoardModel Board
@@ -70,19 +71,22 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             {
                 TakeImageAndParse();
             });
+            NewPuzzleCommand = new Command(execute: () =>
+            {
+                NewPuzzle();
+            });
             IsLoading = false;
             StatusText = "";
             Board = new BoardModel();
             parser = new SudokuImageParser();
             BoardInitiation.InitBasicBoard(Board);
-            
-            // BoardInitiation.InitCommaSeperatedBoard(Board, TestInputs.UNSOLVED_BOARD_EXTREME);
         }
 
         public ICommand SolvePuzzleCommand { get; }
         public ICommand VerifyPuzzleCommand { get; }
         public ICommand ClearPuzzleCommand { get; }
         public ICommand TakeImageAndParseCommand { get; }
+        public ICommand NewPuzzleCommand { get; }
 
         public void SolvePuzzle()
         {
@@ -109,6 +113,30 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         public void ClearPuzzle()
         {
             BoardInitiation.ClearBoard(Board);
+        }
+
+        public void NewPuzzle()
+        {
+            ClearPuzzle();
+            string puzzle = TestInputs.UNSOLVED_BOARD_EASY;
+            switch (curPuzzle)
+            {
+                case 0:
+                    puzzle = TestInputs.UNSOLVED_BOARD_EASY;
+                    break;
+                case 1:
+                    puzzle = TestInputs.UNSOLVED_BOARD_MEDIUM;
+                    break;
+                case 2:
+                    puzzle = TestInputs.UNSOLVED_BOARD_HARD;
+                    break;
+                case 3:
+                    puzzle = TestInputs.UNSOLVED_BOARD_EXTREME;
+                    curPuzzle = -1;
+                    break;
+            }
+            curPuzzle++;
+            BoardInitiation.InitCommaSeperatedBoard(Board, puzzle);
         }
 
         public async void TakeImageAndParse()

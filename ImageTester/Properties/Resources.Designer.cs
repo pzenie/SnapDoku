@@ -89,5 +89,15 @@ namespace ImageTester.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] test4 {
+            get {
+                object obj = ResourceManager.GetObject("test4", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
