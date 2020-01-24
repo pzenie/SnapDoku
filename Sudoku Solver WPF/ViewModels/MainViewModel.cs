@@ -36,8 +36,6 @@ namespace Sudoku_Solver_WPF.ViewModels
         {
             Board = new BoardModel();
             BoardInitiation.InitBasicBoard(Board);
-           // List<int> results = Puzzle_Image_Recognition.Sudoku_Normal.Parser.Solve(@"C:\Users\Paul\Desktop\sdsf\test.png");
-            string test = "";
             BoardInitiation.InitCommaSeperatedBoard(Board, TestInputs.UNSOLVED_BOARD_HARD);
         }
 

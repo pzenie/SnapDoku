@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Text;
+﻿using System.IO;
 using System.Threading;
 using System.Windows.Input;
 using Caliburn.Micro;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
+using Puzzle_Image_Recognition.Sudoku_Normal;
 using Sudoku_Solver.Data;
 using Sudoku_Solver.Initiation;
 using Sudoku_Solver.Solver;
@@ -18,6 +17,8 @@ namespace Sudoku_Solver_Xamarin.ViewModels
 {
     class HomeViewModel : PropertyChangedBase
     {
+        private readonly SudokuImageParser parser;
+
         private BoardModel boardPrivate;
         public BoardModel Board
         {
@@ -63,7 +64,7 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             });
             ClearPuzzleCommand = new Command(execute: () =>
             {
-                TakeImageAndParse();//ClearPuzzle();
+                ClearPuzzle();
             });
             TakeImageAndParseCommand = new Command(execute: () =>
             {
@@ -72,6 +73,7 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             IsLoading = false;
             StatusText = "";
             Board = new BoardModel();
+            parser = new SudokuImageParser();
             BoardInitiation.InitBasicBoard(Board);
             
             // BoardInitiation.InitCommaSeperatedBoard(Board, TestInputs.UNSOLVED_BOARD_EXTREME);
@@ -112,14 +114,14 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         public async void TakeImageAndParse()
         {
             PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
-            if(status != PermissionStatus.Granted)
+            if (status != PermissionStatus.Granted)
             {
                 var granted = await CrossPermissions.Current.RequestPermissionsAsync(new Permission[] { Permission.Camera });
                 status = granted[Permission.Camera];
             }
             if (status == PermissionStatus.Granted)
             {
-                var photo = await Plugin.Media.CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions() { });
+                var photo = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions() { });
                 if (photo != null)
                 {
 
@@ -130,29 +132,13 @@ namespace Sudoku_Solver_Xamarin.ViewModels
                         ParsePuzzle(photoBytes);
                     }
                 }
-                else
-                {
-                    string sdasdas = "wat";
-                }
             }
         }
 
         private void ParsePuzzle(byte[] file)
         {
-            var result = Puzzle_Image_Recognition.Sudoku_Normal.Parser.Solve(file);
-            int row = 0;
-            int col = 0;
-            int[,] board = new int[9, 9];
-            foreach (int i in result)
-            {
-                if (row >= 9)
-                {
-                    row = 0;
-                    col++;
-                }
-                board[row, col] = i;
-                row++;
-            }
+            int[,] board = parser.Solve(file);
+
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)

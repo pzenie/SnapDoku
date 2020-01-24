@@ -10,7 +10,8 @@ namespace Sudoku_Solver.Solver
       {
          Stack<BoardModel> boardStack = new Stack<BoardModel>();
          boardStack.Push(new BoardModel(board));
-         while (boardStack.Count > 0)
+         DateTime timeout = DateTime.Now.AddMilliseconds(10000);
+         while (boardStack.Count > 0 && DateTime.Now < timeout)
          {
             BoardModel currentBoard = boardStack.Pop();
             Tuple<int, int> coords = GetNextCoordinates(currentBoard.currentX, currentBoard.currentY, currentBoard.BoardValues.Count);

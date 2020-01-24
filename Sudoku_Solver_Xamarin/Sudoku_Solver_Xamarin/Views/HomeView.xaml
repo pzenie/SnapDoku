@@ -99,10 +99,12 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Text="&lt;"/>
                 <Button Grid.Column="1" Text="Clear" Command="{Binding ClearPuzzleCommand}"/>
-                <Button Grid.Column="2" Text="&gt;"/>
+                <Button Grid.Column="2" Text="Photo" Command="{Binding TakeImageAndParseCommand}"/>
+                <Button Grid.Column="3" Text="&gt;"/>
             </Grid>
             <Button Grid.Row="3" Grid.Column="0" Text="Solve Puzzle" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
             <Button Grid.Row="3" Grid.Column="1" Text="Verify Solution" Command="{Binding VerifyPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
