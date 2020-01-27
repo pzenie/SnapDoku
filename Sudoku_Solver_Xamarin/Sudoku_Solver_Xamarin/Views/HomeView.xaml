@@ -9,7 +9,8 @@
              x:Class="Sudoku_Solver_Xamarin.Views.HomeView"
              xmlns:localControls="clr-namespace:Sudoku_Solver_Xamarin.Controls;assembly=Sudoku_Solver_Xamarin"
              xmlns:localBehaviors="clr-namespace:Sudoku_Solver_Xamarin.Behaviors;assembly=Sudoku_Solver_Xamarin"
-             xmlns:flex="clr-namespace:Flex.Controls;assembly=Flex">
+             xmlns:flex="clr-namespace:Flex.Controls;assembly=Flex"
+             xmlns:snackBar="clr-namespace:Sudoku_Solver_Xamarin.Views;assembly=Sudoku_Solver_Xamarin">
     <ContentPage.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
             <Grid HorizontalOptions="FillAndExpand" Padding="0,0,0,0" ColumnSpacing="0" RowSpacing="0">
@@ -90,6 +91,7 @@
             <Setter Property="HorizontalOptions" Value="Center"/>
             <Setter Property="ForegroundColor" Value="White"/>
             <Setter Property="FontSize" Value="18"/>
+            <Setter Property="HighlightBackgroundColor" Value="#FBEEC1"/>
         </Style>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -105,8 +107,6 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding StatusText}" FontSize="Large" 
-                   VerticalOptions="Center" HorizontalOptions="Center"/>
             <controls:ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding Board.BoardValues}" 
                                    ItemTemplate="{DynamicResource DataTemplate_Level1}" Spacing="0" Padding="10, 10, 10, 10"/>
             <ActivityIndicator Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" IsRunning="{Binding IsLoading}"/>
@@ -145,6 +145,8 @@
             <Button Grid.Row="2" Grid.Column="0" Text="Solve" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
             <Button Grid.Row="2" Grid.Column="1" Text="Upload Puzzle" Command="{Binding TakeImageAndParseCommand}" Style="{DynamicResource Key=Main_Button}"/>
             <Button Grid.Row="2" Grid.Column="2" Text="Verify" Command="{Binding VerifyPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
+            <snackBar:SnackBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Message="{Binding StatusText}" IsOpen="{Binding ShowSnackbar, Mode=TwoWay}" 
+                               BackgroundColor="Red" HeightRequest="40" VerticalOptions="End" TextColor="White"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

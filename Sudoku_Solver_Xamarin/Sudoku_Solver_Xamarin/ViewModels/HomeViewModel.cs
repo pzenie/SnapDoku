@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Micro;
 using Plugin.Media;
@@ -10,6 +12,7 @@ using Puzzle_Image_Recognition.Sudoku_Normal;
 using Sudoku_Solver.Data;
 using Sudoku_Solver.Initiation;
 using Sudoku_Solver.Solver;
+using Sudoku_Solver_Xamarin.DependencyServiceInterfaces;
 using Sudoku_Solver_Xamarin.Resources;
 using Xamarin.Forms;
 using Cell = Sudoku_Solver.Data.Cell;
@@ -40,6 +43,17 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             {
                 isLoading = value;
                 NotifyOfPropertyChange(nameof(IsLoading));
+            }
+        }
+
+        private bool showSnackbar;
+        public bool ShowSnackbar
+        {
+            get { return showSnackbar; }
+            set
+            {
+                showSnackbar = value;
+                NotifyOfPropertyChange(nameof(ShowSnackbar));
             }
         }
 
@@ -104,12 +118,23 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             Thread thread = new Thread(() =>
             {
                 IsLoading = true;
-                StatusText = MagicStrings.SOLVING;
                 Board = Solver.PuzzleSolver(Board, GroupGetter.GetStandardGroups(Board));
-                StatusText = PuzzleVerifier.VerifyPuzzle(Board) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED;
                 IsLoading = false;
+                UpdateStatus(PuzzleVerifier.VerifyPuzzle(Board) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED);
             });
             thread.Start();
+        }
+        private void UpdateStatus(string message)
+        {
+            StatusText = message;
+            Thread messageThread = new Thread(() =>
+            {
+                ShowSnackbar = true;
+                DateTime to = DateTime.Now.AddMilliseconds(3000);
+                while (DateTime.Now < to) { }
+                ShowSnackbar = false;
+            });
+            messageThread.Start();
         }
 
         public void VerifyPuzzle()
@@ -118,7 +143,7 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             IsLoading = true;
             bool verify = PuzzleVerifier.VerifyPuzzle(Board);
             IsLoading = false;
-            StatusText = verify ? MagicStrings.VALID_SOLUTION : MagicStrings.INVALID_SOLUTION;
+            UpdateStatus(verify ? MagicStrings.VALID_SOLUTION : MagicStrings.INVALID_SOLUTION);
         }
 
         public void DigitSelected(object digit)
@@ -150,7 +175,6 @@ namespace Sudoku_Solver_Xamarin.ViewModels
                 foreach(Cell cell1 in row)
                 {
                     if (!cell1.Equals(c)) cell1.Selected = false;
-                    //else cell1.Selected = true;
                 }
             }
         }
@@ -181,6 +205,29 @@ namespace Sudoku_Solver_Xamarin.ViewModels
 
         public async void TakeImageAndParse()
         {
+            //TODO Should replace this with a messaging service to maintain seperation of viewmodel and view
+            bool existing = await Application.Current.MainPage.DisplayAlert("Parse Sudoku", "Would you like to take a photo or upload an existing one?", "Upload", "Take");
+            Stream photo;
+            if(existing)
+            {
+                photo = await DependencyService.Get<IPhotoPickerService>().GetImageStreamAsync();
+            }
+            else
+            {
+                photo = await TakePhoto();
+            }            
+            if (photo != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    photo.CopyTo(memoryStream);
+                    byte[] photoBytes = memoryStream.ToArray();
+                    ParsePuzzle(photoBytes);
+                }
+            }
+        }
+        private async Task<Stream> TakePhoto()
+        {
             PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
             if (status != PermissionStatus.Granted)
             {
@@ -190,18 +237,11 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             if (status == PermissionStatus.Granted)
             {
                 var photo = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions() { });
-                if (photo != null)
-                {
-
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        photo.GetStream().CopyTo(memoryStream);
-                        byte[] photoBytes = memoryStream.ToArray();
-                        ParsePuzzle(photoBytes);
-                    }
-                }
+                return photo.GetStream();
             }
+            return null;
         }
+    
 
         private void ParsePuzzle(byte[] file)
         {
@@ -215,6 +255,10 @@ namespace Sudoku_Solver_Xamarin.ViewModels
                     if (val != 0)
                     {
                         Board.BoardValues[i][j].CellValue = val.ToString();
+                    }
+                    else
+                    {
+                        Board.BoardValues[i][j].CellValue = string.Empty;
                     }
                 }
             }
