@@ -12,5 +12,15 @@ namespace Sudoku_Solver_Xamarin.Views
             this.BindingContext = new HomeViewModel();
             InitializeComponent();
         }
+
+        private void FlexButton_Toggled(object sender, ToggledEventArgs e)
+        {
+
+        }
+
+        private void FlexButton_Clicked(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }

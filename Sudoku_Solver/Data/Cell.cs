@@ -27,6 +27,17 @@ namespace Sudoku_Solver.Data
             }
         }
 
+        private bool selected;
+        public bool Selected
+        {
+            get { return selected; }
+            set
+            {
+                selected = value;
+                NotifyOfPropertyChange(nameof(Selected));
+            }
+        }
+
         public int x, y;
 
         public bool LeftWall
@@ -146,6 +157,7 @@ namespace Sudoku_Solver.Data
             TopWall = cell.TopWall;
             BottomWall = cell.BottomWall;
             _boardSize = cell._boardSize;
+            Selected = cell.Selected;
             PossibleValues = new List<string>(cell.PossibleValues);
             x = cell.x;
             y = cell.y;

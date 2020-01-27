@@ -5,9 +5,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:XamarinUniversity.Controls;assembly=XamU.Infrastructure"
              mc:Ignorable="d"
+             x:Name="homeView"
              x:Class="Sudoku_Solver_Xamarin.Views.HomeView"
              xmlns:localControls="clr-namespace:Sudoku_Solver_Xamarin.Controls;assembly=Sudoku_Solver_Xamarin"
-             xmlns:localBehaviors="clr-namespace:Sudoku_Solver_Xamarin.Behaviors;assembly=Sudoku_Solver_Xamarin">
+             xmlns:localBehaviors="clr-namespace:Sudoku_Solver_Xamarin.Behaviors;assembly=Sudoku_Solver_Xamarin"
+             xmlns:flex="clr-namespace:Flex.Controls;assembly=Flex">
     <ContentPage.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
             <Grid HorizontalOptions="FillAndExpand" Padding="0,0,0,0" ColumnSpacing="0" RowSpacing="0">
@@ -25,37 +27,39 @@
                 <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="0" Grid.RowSpan="3" Color="Black" IsVisible="{Binding LeftWall}"/>
                 <BoxView Grid.Row="2" WidthRequest="1" Grid.Column="0" Grid.ColumnSpan="3" Color="Black" IsVisible="{Binding BottomWall}"/>
                 <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="2" Grid.RowSpan="3" Color="Black" IsVisible="{Binding RightWall}"/>
-                <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="0" Grid.ColumnSpan="3" Color="#003426">
+                <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="0" Grid.ColumnSpan="3" Color="#BC986A">
                     <BoxView.Triggers>
                         <DataTrigger TargetType="BoxView" Binding="{Binding TopWall}" Value="True">
                             <Setter Property="IsVisible" Value="False"/>
                         </DataTrigger>
                     </BoxView.Triggers>
                 </BoxView>
-                <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="0" Grid.RowSpan="3" Color="#003426">
+                <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="0" Grid.RowSpan="3" Color="#BC986A">
                     <BoxView.Triggers>
                         <DataTrigger TargetType="BoxView" Binding="{Binding LeftWall}" Value="True">
                             <Setter Property="IsVisible" Value="False"/>
                         </DataTrigger>
                     </BoxView.Triggers>
                 </BoxView>
-                <BoxView Grid.Row="2" WidthRequest="1" Grid.Column="0" Grid.ColumnSpan="3" Color="#003426">
+                <BoxView Grid.Row="2" WidthRequest="1" Grid.Column="0" Grid.ColumnSpan="3" Color="#BC986A">
                     <BoxView.Triggers>
                         <DataTrigger TargetType="BoxView" Binding="{Binding BottomWall}" Value="True">
                             <Setter Property="IsVisible" Value="False"/>
                         </DataTrigger>
                     </BoxView.Triggers>
                 </BoxView>
-                <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="2" Grid.RowSpan="3" Color="#003426">
+                <BoxView Grid.Row="0" WidthRequest="1" Grid.Column="2" Grid.RowSpan="3" Color="#BC986A">
                     <BoxView.Triggers>
                         <DataTrigger TargetType="BoxView" Binding="{Binding RightWall}" Value="True">
                             <Setter Property="IsVisible" Value="False"/>
                         </DataTrigger>
                     </BoxView.Triggers>
                 </BoxView>
-                <Button Grid.Row="1" Grid.Column="1" Text="{Binding Path=CellValue, Mode=TwoWay}" FontSize="20" 
-                        BackgroundColor="DarkSlateGray" TextColor="White" MinimumWidthRequest="100" WidthRequest="100">
-                </Button>
+                <flex:FlexButton Grid.Row="1" Grid.Column="1" BackgroundColor="#FBEEC1" ForegroundColor="#8D8741" HighlightBackgroundColor="#FBEEC1"
+                                 Text="{Binding Path=CellValue, Mode=TwoWay}" FontSize="20" WidthRequest="100" MinimumWidthRequest="100" Padding="0" ToggleMode="True" HighlightBorderColor="#659DBD"
+                                 HighlightForegroundColor="#8D8741" BorderThickness="3" BorderColor="#FBEEC1" ClickedCommandParameter="{Binding}" IsToggled="{Binding Selected, Mode=TwoWay}"
+                                 ClickedCommand="{Binding BindingContext.CellSelectedCommand, Source={x:Reference homeView}}" HeightRequest="40" MinimumHeightRequest="40">
+                </flex:FlexButton>
             </Grid>
         </DataTemplate>
 
@@ -68,32 +72,32 @@
         </DataTemplate>
         <Style x:Key="Main_Button" TargetType="Button">
             <Setter Property="TextColor" Value="White"/>
-            <Setter Property="BorderColor" Value="Black"/>
-            <Setter Property="BorderWidth" Value="1"/>
-            <Setter Property="BackgroundColor" Value="#260f0f"/>
-            <Setter Property="CornerRadius" Value="40"/>
+            <Setter Property="BackgroundColor" Value="#8D8741"/> 
+            <Setter Property="CornerRadius" Value="20"/>
             <Setter Property="HorizontalOptions" Value="Center"/>
             <Setter Property="WidthRequest" Value="120"/>
             <Setter Property="VerticalOptions" Value="Center"/>
-            <Setter Property="HeightRequest" Value="50"/>
+            <Setter Property="HeightRequest" Value="60"/>
+            <Setter Property="Padding" Value="10"/>
         </Style>
-        <Style x:Key="Digit_Button" TargetType="Button">
-            <Setter Property="TextColor" Value="White"/>
-            <Setter Property="BorderColor" Value="Black"/>
-            <Setter Property="BorderWidth" Value="1"/>
-            <Setter Property="BackgroundColor" Value="DarkGreen"/>
-            <Setter Property="CornerRadius" Value="45"/>
-            <Setter Property="WidthRequest" Value="90"/>
-            <Setter Property="VerticalOptions" Value="CenterAndExpand"/>
-            <Setter Property="HeightRequest" Value="135"/>
+        <Style x:Key="Digit_Button" TargetType="flex:FlexButton">
+            <Setter Property="BackgroundColor" Value="#DAAD86"/>
+            <Setter Property="CornerRadius" Value="40"/>
+            <Setter Property="WidthRequest" Value="80"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+            <Setter Property="HeightRequest" Value="80"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalOptions" Value="Center"/>
+            <Setter Property="ForegroundColor" Value="White"/>
+            <Setter Property="FontSize" Value="18"/>
         </Style>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid BackgroundColor="Gray" Padding="0,0,0,0" ColumnSpacing="0" RowSpacing="0">
+        <Grid BackgroundColor="#659DBD" Padding="0,0,0,0" ColumnSpacing="0" RowSpacing="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="5*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="7*"/>
+                <RowDefinition Height="2*"/>
                 <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -105,7 +109,7 @@
                    VerticalOptions="Center" HorizontalOptions="Center"/>
             <controls:ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding Board.BoardValues}" 
                                    ItemTemplate="{DynamicResource DataTemplate_Level1}" Spacing="0" Padding="10, 10, 10, 10"/>
-            <ActivityIndicator Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" IsRunning="{Binding IsLoading}"/>
+            <ActivityIndicator Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" IsRunning="{Binding IsLoading}"/>
             <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -117,29 +121,28 @@
             <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="3*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="1" Grid.Column="1" Text="1" Style="{DynamicResource Key=Digit_Button}"/>
-                <Button Grid.Row="1" Grid.Column="2" Text="2" Style="{DynamicResource Key=Digit_Button}"/>
-                <Button Grid.Row="1" Grid.Column="3" Text="3" Style="{DynamicResource Key=Digit_Button}"/>
-                <Button Grid.Row="2" Grid.Column="1" Text="4" Style="{DynamicResource Key=Digit_Button}"/>
-                <Button Grid.Row="2" Grid.Column="2" Text="5" Style="{DynamicResource Key=Digit_Button}"/>
-                <Button Grid.Row="2" Grid.Column="3" Text="6" Style="{DynamicResource Key=Digit_Button}"/>
-                <Button Grid.Row="3" Grid.Column="1" Text="7" Style="{DynamicResource Key=Digit_Button}"/>
-                <Button Grid.Row="3" Grid.Column="2" Text="8" Style="{DynamicResource Key=Digit_Button}"/>
-                <Button Grid.Row="3" Grid.Column="3" Text="9" Style="{DynamicResource Key=Digit_Button}"/>
+                <flex:FlexButton Grid.Row="0" Grid.Column="1" Text="1" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="1" Style="{DynamicResource Key=Digit_Button}"/>
+                <flex:FlexButton Grid.Row="0" Grid.Column="2" Text="2" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="2" Style="{DynamicResource Key=Digit_Button}"/>
+                <flex:FlexButton Grid.Row="0" Grid.Column="3" Text="3" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="3" Style="{DynamicResource Key=Digit_Button}"/>
+                <flex:FlexButton Grid.Row="1" Grid.Column="1" Text="4" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="4" Style="{DynamicResource Key=Digit_Button}"/>
+                <flex:FlexButton Grid.Row="1" Grid.Column="2" Text="5" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="5" Style="{DynamicResource Key=Digit_Button}"/>
+                <flex:FlexButton Grid.Row="1" Grid.Column="3" Text="6" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="6" Style="{DynamicResource Key=Digit_Button}"/>
+                <flex:FlexButton Grid.Row="2" Grid.Column="1" Text="7" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="7" Style="{DynamicResource Key=Digit_Button}"/>
+                <flex:FlexButton Grid.Row="2" Grid.Column="2" Text="8" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="8" Style="{DynamicResource Key=Digit_Button}"/>
+                <flex:FlexButton Grid.Row="2" Grid.Column="3" Text="9" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="9" Style="{DynamicResource Key=Digit_Button}"/>
             </Grid>
-            <Button Grid.Row="2" Grid.Column="0" Text="Solve" BackgroundColor="Black" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
+            <Button Grid.Row="2" Grid.Column="0" Text="Solve" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
             <Button Grid.Row="2" Grid.Column="1" Text="Upload Puzzle" Command="{Binding TakeImageAndParseCommand}" Style="{DynamicResource Key=Main_Button}"/>
             <Button Grid.Row="2" Grid.Column="2" Text="Verify" Command="{Binding VerifyPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
         </Grid>

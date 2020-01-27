@@ -12,6 +12,7 @@ using Sudoku_Solver.Initiation;
 using Sudoku_Solver.Solver;
 using Sudoku_Solver_Xamarin.Resources;
 using Xamarin.Forms;
+using Cell = Sudoku_Solver.Data.Cell;
 
 namespace Sudoku_Solver_Xamarin.ViewModels
 {
@@ -75,6 +76,14 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             {
                 NewPuzzle();
             });
+            CellSelectedCommand = new Command(execute: (object param) =>
+            {
+                CellSelected(param);
+            });
+            DigitClickedCommand = new Command(execute: (object digit) =>
+            {
+                DigitSelected(digit);
+            });
             IsLoading = false;
             StatusText = "";
             Board = new BoardModel();
@@ -87,6 +96,8 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         public ICommand ClearPuzzleCommand { get; }
         public ICommand TakeImageAndParseCommand { get; }
         public ICommand NewPuzzleCommand { get; }
+        public ICommand CellSelectedCommand { get; }
+        public ICommand DigitClickedCommand { get; }
 
         public void SolvePuzzle()
         {
@@ -110,9 +121,38 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             StatusText = verify ? MagicStrings.VALID_SOLUTION : MagicStrings.INVALID_SOLUTION;
         }
 
+        public void DigitSelected(object digit)
+        {
+            string d = (string)digit;
+            foreach(var row in Board.BoardValues)
+            {
+                foreach(Cell cell in row)
+                {
+                    if(cell.Selected)
+                    {
+                        cell.CellValue = d;
+                        break;
+                    }
+                }
+            }
+        }
+
         public void ClearPuzzle()
         {
             BoardInitiation.ClearBoard(Board);
+        }
+
+        public void CellSelected(object cell)
+        {
+            Cell c = (Cell)cell;
+            foreach (var row in Board.BoardValues)
+            {
+                foreach(Cell cell1 in row)
+                {
+                    if (!cell1.Equals(c)) cell1.Selected = false;
+                    //else cell1.Selected = true;
+                }
+            }
         }
 
         public void NewPuzzle()
