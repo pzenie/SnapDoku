@@ -7,10 +7,8 @@
              mc:Ignorable="d"
              x:Name="homeView"
              x:Class="Sudoku_Solver_Xamarin.Views.HomeView"
-             xmlns:localControls="clr-namespace:Sudoku_Solver_Xamarin.Controls;assembly=Sudoku_Solver_Xamarin"
-             xmlns:localBehaviors="clr-namespace:Sudoku_Solver_Xamarin.Behaviors;assembly=Sudoku_Solver_Xamarin"
              xmlns:flex="clr-namespace:Flex.Controls;assembly=Flex"
-             xmlns:snackBar="clr-namespace:Sudoku_Solver_Xamarin.Views;assembly=Sudoku_Solver_Xamarin">
+             xmlns:views="clr-namespace:Sudoku_Solver_Xamarin.Views;assembly=Sudoku_Solver_Xamarin">
     <ContentPage.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
             <Grid HorizontalOptions="FillAndExpand" Padding="0,0,0,0" ColumnSpacing="0" RowSpacing="0">
@@ -73,7 +71,7 @@
         </DataTemplate>
         <Style x:Key="Main_Button" TargetType="Button">
             <Setter Property="TextColor" Value="White"/>
-            <Setter Property="BackgroundColor" Value="#8D8741"/> 
+            <Setter Property="BackgroundColor" Value="#BC986A"/> 
             <Setter Property="CornerRadius" Value="20"/>
             <Setter Property="HorizontalOptions" Value="Center"/>
             <Setter Property="WidthRequest" Value="120"/>
@@ -91,7 +89,7 @@
             <Setter Property="HorizontalOptions" Value="Center"/>
             <Setter Property="ForegroundColor" Value="White"/>
             <Setter Property="FontSize" Value="18"/>
-            <Setter Property="HighlightBackgroundColor" Value="#FBEEC1"/>
+            <Setter Property="HighlightBackgroundColor" Value="#BC986A"/>
         </Style>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -115,14 +113,15 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Text="Clear Puzzle" WidthRequest="160" Command="{Binding ClearPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
-                <Button Grid.Column="1" Text="New Puzzle" WidthRequest="160" Command="{Binding NewPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
+                <Button Grid.Column="0" Text="Clear Puzzle" WidthRequest="160" HeightRequest="50" VerticalOptions="Center" Command="{Binding ClearPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
+                <Button Grid.Column="1" Text="New Puzzle" WidthRequest="160" HeightRequest="50" VerticalOptions="Center" Command="{Binding NewPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
             </Grid>
             <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="6*"/>
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
@@ -141,11 +140,14 @@
                 <flex:FlexButton Grid.Row="2" Grid.Column="1" Text="7" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="7" Style="{DynamicResource Key=Digit_Button}"/>
                 <flex:FlexButton Grid.Row="2" Grid.Column="2" Text="8" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="8" Style="{DynamicResource Key=Digit_Button}"/>
                 <flex:FlexButton Grid.Row="2" Grid.Column="3" Text="9" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="9" Style="{DynamicResource Key=Digit_Button}"/>
+                <ImageButton Grid.Row="2" Grid.Column="4" Source="{views:ImageResource Sudoku_Solver_Xamarin.Resources.Delete_Icon.png}" 
+                             WidthRequest="70" HeightRequest="50" CornerRadius="20" Command="{Binding DigitClickedCommand}" CommandParameter="" 
+                             BackgroundColor="#DAAD86" HorizontalOptions="Center" VerticalOptions="Center" Padding="0,0,5,0" />
             </Grid>
             <Button Grid.Row="2" Grid.Column="0" Text="Solve" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
-            <Button Grid.Row="2" Grid.Column="1" Text="Upload Puzzle" Command="{Binding TakeImageAndParseCommand}" Style="{DynamicResource Key=Main_Button}"/>
+            <Button Grid.Row="2" Grid.Column="1" Text="Upload" Command="{Binding TakeImageAndParseCommand}" Style="{DynamicResource Key=Main_Button}"/>
             <Button Grid.Row="2" Grid.Column="2" Text="Verify" Command="{Binding VerifyPuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
-            <snackBar:SnackBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Message="{Binding StatusText}" IsOpen="{Binding ShowSnackbar, Mode=TwoWay}" 
+            <views:SnackBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Message="{Binding StatusText}" IsOpen="{Binding ShowSnackbar, Mode=TwoWay}" 
                                BackgroundColor="Red" HeightRequest="40" VerticalOptions="End" TextColor="White"/>
         </Grid>
     </ContentPage.Content>
