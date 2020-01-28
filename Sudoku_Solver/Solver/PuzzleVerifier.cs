@@ -6,12 +6,13 @@ namespace Sudoku_Solver.Solver
 {
    public static class PuzzleVerifier
    {
-      public static bool VerifyPuzzle(BoardModel board)
+      public static bool VerifyPuzzle(BoardModel board, List<List<List<Tuple<int, int>>>> groups)
       {
          bool verify = true;
-         verify &= VerifyGroups(board, GroupGetter.GetGroups(board));
-         verify &= VerifyGroups(board, GroupGetter.GetVerticals(board));
-         verify &= VerifyGroups(board, GroupGetter.GetHorizontals(board));
+         foreach(var group in groups)
+         {
+            verify &= VerifyGroups(board, group);
+         }
          return verify;
       }
 
@@ -23,10 +24,9 @@ namespace Sudoku_Solver.Solver
             foreach (Tuple<int, int> cellLocation in cellLocations)
             {
                Cell cell = board.BoardValues[cellLocation.Item1][cellLocation.Item2];
-               int value;
-               if (int.TryParse(cell.CellValue, out value))
+               if (int.TryParse(cell.CellValue, out int value))
                {
-                  if (value > 0 && value <= board.BoardValues.Count)
+                  if (value > 0 && value <= board.BoardValues.Length)
                   {
                      if (group.Contains(value))
                      {

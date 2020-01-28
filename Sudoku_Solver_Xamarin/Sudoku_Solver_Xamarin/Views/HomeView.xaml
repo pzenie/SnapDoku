@@ -105,7 +105,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <controls:ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding Board.BoardValues}" 
+            <controls:ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding Board}" 
                                    ItemTemplate="{DynamicResource DataTemplate_Level1}" Spacing="0" Padding="10, 10, 10, 10"/>
             <ActivityIndicator Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" IsRunning="{Binding IsLoading}"/>
             <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">

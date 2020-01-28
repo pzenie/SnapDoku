@@ -1,7 +1,6 @@
 ﻿using Sudoku_Solver.Data;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Sudoku_Solver.Solver
@@ -28,7 +27,7 @@ namespace Sudoku_Solver.Solver
 
       private static void PruneAllCells(BoardModel board, List<List<List<Tuple<int, int>>>> groups)
       {
-         foreach (ObservableCollection<Cell> row in board.BoardValues)
+         foreach (Cell[] row in board.BoardValues)
          {
             foreach (Cell cell in row)
             {

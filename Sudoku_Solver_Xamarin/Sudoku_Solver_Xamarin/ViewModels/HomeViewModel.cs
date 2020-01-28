@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,12 +11,13 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Puzzle_Image_Recognition.Sudoku_Normal;
 using Sudoku_Solver.Data;
-using Sudoku_Solver.Initiation;
 using Sudoku_Solver.Solver;
 using Sudoku_Solver_Xamarin.DependencyServiceInterfaces;
+using Sudoku_Solver_Shared.Models;
 using Sudoku_Solver_Xamarin.Resources;
 using Xamarin.Forms;
-using Cell = Sudoku_Solver.Data.Cell;
+using Sudoku_Solver_Shared.Initiation;
+using System.Collections.Generic;
 
 namespace Sudoku_Solver_Xamarin.ViewModels
 {
@@ -24,16 +26,7 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         private readonly SudokuImageParser parser;
         private int curPuzzle = 0;
 
-        private BoardModel boardPrivate;
-        public BoardModel Board
-        {
-            get { return boardPrivate; }
-            set
-            {
-                boardPrivate = value;
-                NotifyOfPropertyChange(nameof(Board));
-            }
-        }
+        public ObservableCollection<ObservableCollection<ObservableCell>> Board { get; set; }
 
         private bool isLoading;
         public bool IsLoading
@@ -100,7 +93,7 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             });
             IsLoading = false;
             StatusText = "";
-            Board = new BoardModel();
+            Board = new ObservableCollection<ObservableCollection<ObservableCell>>();
             parser = new SudokuImageParser();
             BoardInitiation.InitBasicBoard(Board);
         }
@@ -118,9 +111,11 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             Thread thread = new Thread(() =>
             {
                 IsLoading = true;
-                Board = Solver.PuzzleSolver(Board, GroupGetter.GetStandardGroups(Board));
+                BoardModel bModel = CollectionToBoardModel(Board);
+                bModel = Solver.PuzzleSolver(bModel, GroupGetter.GetStandardGroups(Board));
+                BoardModelToCollection(bModel);
                 IsLoading = false;
-                UpdateStatus(PuzzleVerifier.VerifyPuzzle(Board) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED);
+                UpdateStatus(PuzzleVerifier.VerifyPuzzle(bModel, GroupGetter.GetStandardGroups(Board)) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED);
             });
             thread.Start();
         }
@@ -141,17 +136,46 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         {
             StatusText = MagicStrings.VERIFYING;
             IsLoading = true;
-            bool verify = PuzzleVerifier.VerifyPuzzle(Board);
+            bool verify = PuzzleVerifier.VerifyPuzzle(CollectionToBoardModel(Board), GroupGetter.GetStandardGroups(Board));
             IsLoading = false;
             UpdateStatus(verify ? MagicStrings.VALID_SOLUTION : MagicStrings.INVALID_SOLUTION);
+        }
+
+        private void BoardModelToCollection(BoardModel board)
+        {
+            for(int i = 0; i < board.BoardValues.Length; i++)
+            {
+                for(int j = 0; j < board.BoardValues[i].Length; j++)
+                {
+                    Board[i][j].CellValue = board.BoardValues[i][j].CellValue;
+                }
+            }
+        }
+
+        private BoardModel CollectionToBoardModel(ObservableCollection<ObservableCollection<ObservableCell>> board)
+        {
+            int[] columns = new int[board.Count];
+            for(int i = 0; i < board.Count; i++)
+            {
+                columns[i] = board[i].Count;
+            }
+            BoardModel bModel = new BoardModel(board.Count, columns);
+            for(int i =0; i < board.Count; i++)
+            {
+                for(int j = 0; j < board[i].Count; j++)
+                {
+                    bModel.BoardValues[i][j] = new Sudoku_Solver.Data.Cell(board[i][j].CellValue, board.Count);
+                }
+            }
+            return bModel;
         }
 
         public void DigitSelected(object digit)
         {
             string d = (string)digit;
-            foreach(var row in Board.BoardValues)
+            foreach(var row in Board)
             {
-                foreach(Cell cell in row)
+                foreach(ObservableCell cell in row)
                 {
                     if(cell.Selected)
                     {
@@ -169,10 +193,10 @@ namespace Sudoku_Solver_Xamarin.ViewModels
 
         public void CellSelected(object cell)
         {
-            Cell c = (Cell)cell;
-            foreach (var row in Board.BoardValues)
+            ObservableCell c = (ObservableCell)cell;
+            foreach (var row in Board)
             {
-                foreach(Cell cell1 in row)
+                foreach(ObservableCell cell1 in row)
                 {
                     if (!cell1.Equals(c)) cell1.Selected = false;
                 }
@@ -254,11 +278,11 @@ namespace Sudoku_Solver_Xamarin.ViewModels
                     int val = board[i, j];
                     if (val != 0)
                     {
-                        Board.BoardValues[i][j].CellValue = val.ToString();
+                        Board[i][j].CellValue = val.ToString();
                     }
                     else
                     {
-                        Board.BoardValues[i][j].CellValue = string.Empty;
+                        Board[i][j].CellValue = string.Empty;
                     }
                 }
             }

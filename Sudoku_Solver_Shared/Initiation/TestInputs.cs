@@ -1,4 +1,4 @@
-﻿namespace Sudoku_Solver.Initiation
+﻿namespace Sudoku_Solver_Shared.Initiation
 {
    public static class TestInputs
    {

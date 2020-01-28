@@ -1,31 +1,34 @@
-﻿using Caliburn.Micro;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace Sudoku_Solver.Data
 {
-    public class BoardModel : PropertyChangedBase
+    public class BoardModel
     {
-        public ObservableCollection<ObservableCollection<Cell>> BoardValues { get; set; }
+        public Cell[][] BoardValues { get; set; }
 
         public int currentX;
         public int currentY;
 
-        public BoardModel()
+        public BoardModel(int rows, int[] columns)
         {
-            BoardValues = new ObservableCollection<ObservableCollection<Cell>>();
+            BoardValues = new Cell[rows][];
+            for(int i =0; i < rows; i++)
+            {
+                BoardValues[i] = new Cell[columns[i]];
+            }
             currentX = 0;
             currentY = 0;
         }
 
         public BoardModel(BoardModel board)
         {
-            BoardValues = new ObservableCollection<ObservableCollection<Cell>>();
-            for(int i =0; i < board.BoardValues.Count; i++)
+            BoardValues = new Cell[board.BoardValues.Length][];
+            for(int i = 0; i < board.BoardValues.Length; i++)
             {
-                BoardValues.Add(new ObservableCollection<Cell>());
-                for(int j = 0; j < board.BoardValues.Count; j++)
+                BoardValues[i] = new Cell[board.BoardValues[i].Length];
+                for(int j = 0; j < board.BoardValues[i].Length; j++)
                 {
-                    BoardValues[i].Add(new Cell(board.BoardValues[i][j]));
+                    BoardValues[i][j] = new Cell(board.BoardValues[i][j]);
                 }
             }
             currentX = board.currentX;

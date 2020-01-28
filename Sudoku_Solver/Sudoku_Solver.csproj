@@ -5,8 +5,4 @@
     <RootNamespace>Sudoku_Solver</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Caliburn.Micro" Version="4.0.62-alpha" />
-  </ItemGroup>
-
 </Project>

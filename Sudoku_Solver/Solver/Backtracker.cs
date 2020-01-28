@@ -14,7 +14,7 @@ namespace Sudoku_Solver.Solver
          while (boardStack.Count > 0 && DateTime.Now < timeout)
          {
             BoardModel currentBoard = boardStack.Pop();
-            Tuple<int, int> coords = GetNextCoordinates(currentBoard.currentX, currentBoard.currentY, currentBoard.BoardValues.Count);
+            Tuple<int, int> coords = GetNextCoordinates(currentBoard.currentX, currentBoard.currentY, currentBoard.BoardValues.Length);
             int nextX = coords.Item1;
             int nextY = coords.Item2;
             Cell currentCell = currentBoard.BoardValues[currentBoard.currentX][currentBoard.currentY];
@@ -68,9 +68,9 @@ namespace Sudoku_Solver.Solver
 
       private static bool AllCellsHavePossibleValues(BoardModel board)
       {
-         for (int i = 0; i < board.BoardValues.Count; i++)
+         for (int i = 0; i < board.BoardValues.Length; i++)
          {
-            for (int j = 0; j < board.BoardValues[i].Count; j++)
+            for (int j = 0; j < board.BoardValues[i].Length; j++)
             {
                Cell currentCell = board.BoardValues[i][j];
                if (currentCell.CellValue.Length == 0 && currentCell.GetPossibleValues().Count == 0)
@@ -86,7 +86,7 @@ namespace Sudoku_Solver.Solver
       {
          while (currentCell.CellValue.Length != 0)
          {
-            Tuple<int, int> res = GetNextCoordinates(nextX, nextY, currentBoard.BoardValues.Count);
+            Tuple<int, int> res = GetNextCoordinates(nextX, nextY, currentBoard.BoardValues.Length);
             nextX = res.Item1;
             nextY = res.Item2;
             if (nextX > -1 && nextY > -1)

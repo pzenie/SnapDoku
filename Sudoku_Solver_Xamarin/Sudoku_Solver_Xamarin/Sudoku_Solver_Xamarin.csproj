@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Caliburn.Micro" Version="3.2.0" />
     <PackageReference Include="Forms.Controls.FlexButton" Version="0.11.0" />
     <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
     <PackageReference Include="Xam.Plugin.Media" Version="4.0.1.5" />
@@ -33,6 +34,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Puzzle_Image_Recognition\Puzzle_Image_Recognition.csproj" />
     <ProjectReference Include="..\..\Sudoku_Solver\Sudoku_Solver.csproj" />
+    <ProjectReference Include="..\..\Sudoku_Solver_Shared\Sudoku_Solver_Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
