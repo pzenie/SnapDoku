@@ -1,130 +1,185 @@
-﻿using Sudoku_Solver.Data;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Sudoku_Solver.Solver
 {
-   internal static class Pruner
-   {
-      public static void PrunePuzzle(BoardModel board, List<List<List<Tuple<int, int>>>> groups)
-      {
-         bool changed = true;
-         PruneAllCells(board, groups);
-         while (changed)
-         {
-            changed = false;
-            foreach(var group in groups)
+    internal static class Pruner
+    {
+        public static BitArray[][] InitPossibleValues(int[][] board)
+        {
+            BitArray[][] possibleValues = new BitArray[board.Length][];
+            for(int i = 0; i < board.Length; i++)
             {
-               if(AssignForcedCells(board, group))
-               {
-                  changed = true;
-                  PruneAllCells(board, groups);
-               }
+                possibleValues[i] = new BitArray[board[i].Length];
+                for(int j = 0; j < board[i].Length; j++)
+                {
+                    if(board[i][j] == 0) possibleValues[i][j] = new BitArray(board.Length, true);
+                    else possibleValues[i][j] = new BitArray(board.Length, false);
+                }
             }
-         }
-      }
+            return possibleValues;
+        }
 
-      private static void PruneAllCells(BoardModel board, List<List<List<Tuple<int, int>>>> groups)
-      {
-         foreach (Cell[] row in board.BoardValues)
-         {
-            foreach (Cell cell in row)
+        public static int[][] PrunePuzzle(int[][] board, List<List<List<Tuple<int, int>>>> groups)
+        {
+            bool changed = true;
+            BitArray[][] possibleValues = InitPossibleValues(board);
+            while (changed)
             {
-               if (cell.CellValue.Length == 0)
-               {
-                  foreach (List<List<Tuple<int, int>>> group in groups)
-                  {
-                     PruneCell(board, group, cell);
-                  }
-               }
-               else if (cell.GetPossibleValues().Count > 1)
-               {
-                  List<string> values = new List<string>();
-                  foreach (string s in cell.GetPossibleValues())
-                  {
-                     values.Add(s);
-                  }
-                  foreach (string val in values)
-                  {
-                     if (val != cell.CellValue)
-                     {
-                        cell.RemovePossibleValue(val);
-                     }
-                  }
-               }
+                possibleValues = PruneAllCells(board, possibleValues, groups);
+                var result = AssignForcedCells(board, possibleValues);
+                board = result.Item1;
+                possibleValues = result.Item2;
+                changed = result.Item3;
+                result = AssignUniqueCells(board, possibleValues, groups);
+                board = result.Item1;
+                possibleValues = result.Item2;
+                changed |= result.Item3;
             }
-         }
-      }
+            return board;
+        }
 
-      private static void PruneCell(BoardModel board, List<List<Tuple<int,int>>> group, Cell cell)
-      {
-         foreach (List<Tuple<int,int>> grouping in group)
-         {
-            var location = new Tuple<int, int>(cell.x, cell.y);
-            if (grouping.Contains(location))
+        private static BitArray[][] PruneAllCells(int[][] board, BitArray[][] possibleValues, List<List<List<Tuple<int, int>>>> groups)
+        {
+            for (int i = 0; i < board.Length; i++)
             {
-               foreach (Tuple<int,int> cellLocation in grouping)
-               {
-                  Cell tempCell = board.BoardValues[cellLocation.Item1][cellLocation.Item2];
-                  if (cell != tempCell && tempCell.CellValue.Length != 0)
-                  {
-                     cell.RemovePossibleValue(tempCell.CellValue);
-                  }
-               }
-               break;
-            }
-         }
-      }
-
-      private static bool AssignForcedCells(BoardModel board, List<List<Tuple<int,int>>> group)
-      {
-         bool changed = false;
-         foreach (List<Tuple<int,int>> grouping in group)
-         {
-            if(changed)
-            {
-               break;
-            }
-            foreach (Tuple<int, int> cellLocation in grouping)
-            {
-               if(changed)
-               {
-                  break;
-               }
-               Cell cell = board.BoardValues[cellLocation.Item1][cellLocation.Item2];
-               if (cell.CellValue.Length == 0)
-               {
-                  var possibleValues = cell.GetPossibleValues();
-                  if (possibleValues.Count == 1)
-                  {
-                     cell.CellValue = possibleValues.First();
-                     changed = true;
-                     break;
-                  }
-                  foreach (string value in possibleValues)
-                  {
-                     bool unique = true;
-                     foreach (Tuple<int, int> innerCellLocation in grouping)
-                     {
-                        Cell innerCell = board.BoardValues[innerCellLocation.Item1][innerCellLocation.Item2];
-                        if (innerCell != cell && (innerCell.CellValue == value || (innerCell.CellValue.Length == 0 && innerCell.GetPossibleValues().Contains(value))))
+                for (int j = 0; j < board[i].Length; j++)
+                {
+                    if (board[i][j] == 0)
+                    {
+                        foreach (List<List<Tuple<int, int>>> group in groups)
                         {
-                           unique = false;
-                           break;
+                            possibleValues[i][j] = PruneCell(board, possibleValues[i][j], group, new Tuple<int,int>(i,j));
                         }
-                     }
-                     if (unique)
-                     {
-                        cell.CellValue = value;
-                        changed = true;
-                        break;
-                     }
-                  }
-               }
+                    }
+                }
             }
-         }
-         return changed;
-      }
-   }
+            return possibleValues;
+        }
+
+        private static BitArray PruneCell(int[][] board, BitArray possibleValues, List<List<Tuple<int,int>>> group, Tuple<int,int> location)
+        {
+            if (possibleValues.Cast<bool>().Contains(true))
+            {
+                foreach (List<Tuple<int, int>> grouping in group)
+                {
+                    if (grouping.Contains(location))
+                    {
+                        foreach (Tuple<int, int> cellLocation in grouping)
+                        {
+                            int tempCell = board[cellLocation.Item1][cellLocation.Item2];
+                            if (tempCell != 0)
+                            {
+                                possibleValues[tempCell - 1] = false;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            return possibleValues;
+        }
+
+        private static Tuple<int[][], BitArray[][], bool> AssignUniqueCells(int[][] board, BitArray[][] possibleValues, List<List<List<Tuple<int, int>>>> groups)
+        {
+            bool changed = false;
+            foreach(var grouping in groups)
+            {
+                foreach(var group in grouping)
+                {
+                    Dictionary<int, List<Tuple<int, int>>> uniqueTable = new Dictionary<int, List<Tuple<int, int>>>();
+                    foreach (var location in group)
+                    {
+                        int i = location.Item1;
+                        int j = location.Item2;
+                        if (board[i][j] == 0)
+                        {
+                            for (int k = 0; k < possibleValues[i][j].Length; k++)
+                            {
+                                if (possibleValues[i][j][k])
+                                {
+                                    if (!uniqueTable.ContainsKey(k + 1)) uniqueTable[k + 1] = new List<Tuple<int, int>>();
+                                    uniqueTable[k + 1].Add(location);
+                                }
+                            }
+                        }
+                    }
+                    foreach(int key in uniqueTable.Keys)
+                    {
+                        if(uniqueTable[key].Count == 1)
+                        {
+                            var uniqueLocation = uniqueTable[key].First();
+                            board[uniqueLocation.Item1][uniqueLocation.Item2] = key;
+                            possibleValues[uniqueLocation.Item1][uniqueLocation.Item2] = new BitArray(board.Length, false);
+                            changed = true;
+                        }
+                    }
+                }
+            }
+            return new Tuple<int[][], BitArray[][], bool>(board, possibleValues, changed);
+        }
+
+        private static Tuple<int[][], BitArray[][], bool> AssignForcedCells(int[][] board, BitArray[][] possibleValues)
+        {
+            bool changed = false;
+            for(int i = 0; i < board.Length; i++)
+            {
+                for(int j = 0; j < board[i].Length; j++)
+                {
+                    if (board[i][j] == 0)
+                    {
+                        if (GetCardinality(possibleValues[i][j]) == 1)
+                        {
+                            for(int k =0; k < possibleValues[i][j].Length; k++)
+                            {
+                                if (possibleValues[i][j][k])
+                                {
+                                    board[i][j] = k+1;
+                                    possibleValues[i][j] = new BitArray(board.Length, false);
+                                    changed = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return new Tuple<int[][], BitArray[][], bool>(board, possibleValues, changed);
+        }
+
+        public static Int32 GetCardinality(BitArray bitArray)
+        {
+
+            Int32[] ints = new Int32[(bitArray.Count >> 5) + 1];
+
+            bitArray.CopyTo(ints, 0);
+
+            Int32 count = 0;
+
+            // fix for not truncated bits in last integer that may have been set to true with SetAll()
+            ints[ints.Length - 1] &= ~(-1 << (bitArray.Count % 32));
+
+            for (Int32 i = 0; i < ints.Length; i++)
+            {
+
+                Int32 c = ints[i];
+
+                // magic (http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel)
+                unchecked
+                {
+                    c = c - ((c >> 1) & 0x55555555);
+                    c = (c & 0x33333333) + ((c >> 2) & 0x33333333);
+                    c = ((c + (c >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+                }
+
+                count += c;
+
+            }
+
+            return count;
+
+        }
+    }
 }

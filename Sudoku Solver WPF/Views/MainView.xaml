@@ -76,7 +76,7 @@
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Content="{Binding ValidSolution}"/>
-        <ItemsControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" x:Name="Board_BoardValues" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
+        <ItemsControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" x:Name="Board" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
         <Button Foreground="White" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="SolvePuzzle" 
                 Content="Solve Puzzle">
             <Button.Style>

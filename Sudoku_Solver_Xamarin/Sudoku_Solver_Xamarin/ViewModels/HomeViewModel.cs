@@ -17,7 +17,6 @@ using Sudoku_Solver_Shared.Models;
 using Sudoku_Solver_Xamarin.Resources;
 using Xamarin.Forms;
 using Sudoku_Solver_Shared.Initiation;
-using System.Collections.Generic;
 
 namespace Sudoku_Solver_Xamarin.ViewModels
 {
@@ -111,11 +110,11 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             Thread thread = new Thread(() =>
             {
                 IsLoading = true;
-                BoardModel bModel = CollectionToBoardModel(Board);
-                bModel = Solver.PuzzleSolver(bModel, GroupGetter.GetStandardGroups(Board));
-                BoardModelToCollection(bModel);
+                int[][] boardArray = CollectionToIntArray(Board);
+                boardArray = Solver.PuzzleSolver(boardArray, GroupGetter.GetStandardGroups(Board));
+                IntArrayToCollection(boardArray);
                 IsLoading = false;
-                UpdateStatus(PuzzleVerifier.VerifyPuzzle(bModel, GroupGetter.GetStandardGroups(Board)) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED);
+                UpdateStatus(PuzzleVerifier.VerifyPuzzle(boardArray, GroupGetter.GetStandardGroups(Board)) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED);
             });
             thread.Start();
         }
@@ -136,38 +135,43 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         {
             StatusText = MagicStrings.VERIFYING;
             IsLoading = true;
-            bool verify = PuzzleVerifier.VerifyPuzzle(CollectionToBoardModel(Board), GroupGetter.GetStandardGroups(Board));
+            bool verify = PuzzleVerifier.VerifyPuzzle(CollectionToIntArray(Board), GroupGetter.GetStandardGroups(Board));
             IsLoading = false;
             UpdateStatus(verify ? MagicStrings.VALID_SOLUTION : MagicStrings.INVALID_SOLUTION);
         }
 
-        private void BoardModelToCollection(BoardModel board)
+        private void IntArrayToCollection(int[][] board)
         {
-            for(int i = 0; i < board.BoardValues.Length; i++)
+            for(int i = 0; i < board.Length; i++)
             {
-                for(int j = 0; j < board.BoardValues[i].Length; j++)
+                for(int j = 0; j < board[i].Length; j++)
                 {
-                    Board[i][j].CellValue = board.BoardValues[i][j].CellValue;
+                    int digit = board[i][j];
+                    if (digit != 0)
+                    {
+                        Board[i][j].CellValue = board[i][j].ToString();
+                    }
+                    else Board[i][j].CellValue = "";
                 }
             }
         }
 
-        private BoardModel CollectionToBoardModel(ObservableCollection<ObservableCollection<ObservableCell>> board)
+        private int[][] CollectionToIntArray(ObservableCollection<ObservableCollection<ObservableCell>> board)
         {
-            int[] columns = new int[board.Count];
-            for(int i = 0; i < board.Count; i++)
-            {
-                columns[i] = board[i].Count;
-            }
-            BoardModel bModel = new BoardModel(board.Count, columns);
+            int[][] boardArray = new int[board.Count][];
             for(int i =0; i < board.Count; i++)
             {
+                boardArray[i] = new int[board[i].Count];
                 for(int j = 0; j < board[i].Count; j++)
                 {
-                    bModel.BoardValues[i][j] = new Sudoku_Solver.Data.Cell(board[i][j].CellValue, board.Count);
+                    string digit = board[i][j].CellValue;
+                    int number;
+                    if (digit.Length == 0) number = 0;
+                    else number = Convert.ToInt32(digit);
+                    boardArray[i][j] = number;
                 }
             }
-            return bModel;
+            return boardArray;
         }
 
         public void DigitSelected(object digit)
