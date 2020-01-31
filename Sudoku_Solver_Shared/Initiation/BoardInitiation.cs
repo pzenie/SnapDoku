@@ -1,4 +1,5 @@
 ﻿using Sudoku_Solver_Shared.Models;
+using System;
 using System.Collections.ObjectModel;
 
 namespace Sudoku_Solver_Shared.Initiation
@@ -48,6 +49,54 @@ namespace Sudoku_Solver_Shared.Initiation
                     board[i][j].CellValue = string.Empty;
                 }
             }
+        }
+
+        public static void IntArrayToCollection(int[][] board, ObservableCollection<ObservableCollection<ObservableCell>> Board)
+        {
+            for (int i = 0; i < board.Length; i++)
+            {
+                for (int j = 0; j < board[i].Length; j++)
+                {
+                    int digit = board[i][j];
+                    if (digit != 0)
+                    {
+                        Board[i][j].CellValue = board[i][j].ToString();
+                    }
+                    else Board[i][j].CellValue = "";
+                }
+            }
+        }
+
+        public static int[][] CollectionToIntArray(ObservableCollection<ObservableCollection<ObservableCell>> board)
+        {
+            int[][] boardArray = new int[board.Count][];
+            for (int i = 0; i < board.Count; i++)
+            {
+                boardArray[i] = new int[board[i].Count];
+                for (int j = 0; j < board[i].Count; j++)
+                {
+                    string digit = board[i][j].CellValue;
+                    int number;
+                    if (digit.Length == 0) number = 0;
+                    else number = Convert.ToInt32(digit);
+                    boardArray[i][j] = number;
+                }
+            }
+            return boardArray;
+        }
+
+        public static string IntArrayPuzzleToCommeSeperatedString(int[][] board)
+        {
+            string puzzle = string.Empty;
+            for(int i = 0; i < board.Length; i++)
+            {
+                for(int j =0; j < board[i].Length; j++)
+                {
+                    if (puzzle.Length != 0) puzzle += ",";
+                    puzzle += board[i][j].ToString();
+                }
+            }
+            return puzzle;
         }
     }
 }

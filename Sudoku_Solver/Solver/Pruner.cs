@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Sudoku_Solver.Solver
 {
-    internal static class Pruner
+    public static class Pruner
     {
         public static BitArray[][] InitPossibleValues(int[][] board)
         {
@@ -33,6 +33,7 @@ namespace Sudoku_Solver.Solver
                 board = result.Item1;
                 possibleValues = result.Item2;
                 changed = result.Item3;
+                possibleValues = PruneAllCells(board, possibleValues, groups);
                 result = AssignUniqueCells(board, possibleValues, groups);
                 board = result.Item1;
                 possibleValues = result.Item2;
@@ -41,7 +42,7 @@ namespace Sudoku_Solver.Solver
             return board;
         }
 
-        private static BitArray[][] PruneAllCells(int[][] board, BitArray[][] possibleValues, List<List<List<Tuple<int, int>>>> groups)
+        public static BitArray[][] PruneAllCells(int[][] board, BitArray[][] possibleValues, List<List<List<Tuple<int, int>>>> groups)
         {
             for (int i = 0; i < board.Length; i++)
             {
@@ -54,6 +55,10 @@ namespace Sudoku_Solver.Solver
                             possibleValues[i][j] = PruneCell(board, possibleValues[i][j], group, new Tuple<int,int>(i,j));
                         }
                     }
+                    else
+                    {
+                        possibleValues[i][j] = new BitArray(board.Length, false);
+                    }
                 }
             }
             return possibleValues;
@@ -61,59 +66,69 @@ namespace Sudoku_Solver.Solver
 
         private static BitArray PruneCell(int[][] board, BitArray possibleValues, List<List<Tuple<int,int>>> group, Tuple<int,int> location)
         {
-            if (possibleValues.Cast<bool>().Contains(true))
+            foreach (List<Tuple<int, int>> grouping in group)
             {
-                foreach (List<Tuple<int, int>> grouping in group)
+                if (grouping.Contains(location))
                 {
-                    if (grouping.Contains(location))
+                    foreach (Tuple<int, int> cellLocation in grouping)
                     {
-                        foreach (Tuple<int, int> cellLocation in grouping)
+                        if (location == cellLocation) continue;
+                        int tempCell = board[cellLocation.Item1][cellLocation.Item2];
+                        if (tempCell != 0)
                         {
-                            int tempCell = board[cellLocation.Item1][cellLocation.Item2];
-                            if (tempCell != 0)
-                            {
-                                possibleValues[tempCell - 1] = false;
-                            }
+                            possibleValues[tempCell - 1] = false;
                         }
-                        break;
                     }
                 }
             }
             return possibleValues;
         }
 
-        private static Tuple<int[][], BitArray[][], bool> AssignUniqueCells(int[][] board, BitArray[][] possibleValues, List<List<List<Tuple<int, int>>>> groups)
+        public static Tuple<int[][], BitArray[][], bool> AssignUniqueCells(int[][] board, BitArray[][] possibleValues, List<List<List<Tuple<int, int>>>> groups)
         {
             bool changed = false;
-            foreach(var grouping in groups)
+            for(int i = 0; i < board.Length; i++)
             {
-                foreach(var group in grouping)
+                for (int j = 0; j < board[i].Length; j++)
                 {
-                    Dictionary<int, List<Tuple<int, int>>> uniqueTable = new Dictionary<int, List<Tuple<int, int>>>();
-                    foreach (var location in group)
+                    if (board[i][j] == 0)
                     {
-                        int i = location.Item1;
-                        int j = location.Item2;
-                        if (board[i][j] == 0)
+                        Tuple<int, int> cellLocation = new Tuple<int, int>(i, j);
+                        foreach (var grouping in groups)
                         {
-                            for (int k = 0; k < possibleValues[i][j].Length; k++)
+                            foreach (var group in grouping)
                             {
-                                if (possibleValues[i][j][k])
+                                if (group.Contains(cellLocation))
                                 {
-                                    if (!uniqueTable.ContainsKey(k + 1)) uniqueTable[k + 1] = new List<Tuple<int, int>>();
-                                    uniqueTable[k + 1].Add(location);
+                                    List<int> unique = new List<int>();
+                                    for (int k = 0; k < possibleValues[i][j].Length; k++)
+                                    {
+                                        if (possibleValues[i][j][k]) unique.Add(k + 1);
+                                    }
+                                    foreach (var location in group)
+                                    {
+                                        if (board[location.Item1][location.Item2] == 0 && ! cellLocation.Equals(location))
+                                        {
+                                            for (int k = 0; k < possibleValues[location.Item1][location.Item2].Length; k++)
+                                            {
+                                                if (possibleValues[location.Item1][location.Item2][k])
+                                                {
+                                                    if (unique.Contains(k + 1)) unique.Remove(k + 1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (unique.Count == 1)
+                                    {
+                                        board[i][j] = unique.First();
+                                        possibleValues[i][j] = new BitArray(board.Length, false);
+                                        possibleValues = PruneAllCells(board, possibleValues, groups);
+                                        changed = true;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                    }
-                    foreach(int key in uniqueTable.Keys)
-                    {
-                        if(uniqueTable[key].Count == 1)
-                        {
-                            var uniqueLocation = uniqueTable[key].First();
-                            board[uniqueLocation.Item1][uniqueLocation.Item2] = key;
-                            possibleValues[uniqueLocation.Item1][uniqueLocation.Item2] = new BitArray(board.Length, false);
-                            changed = true;
+                            if (board[i][j] != 0) break;
                         }
                     }
                 }
@@ -121,7 +136,7 @@ namespace Sudoku_Solver.Solver
             return new Tuple<int[][], BitArray[][], bool>(board, possibleValues, changed);
         }
 
-        private static Tuple<int[][], BitArray[][], bool> AssignForcedCells(int[][] board, BitArray[][] possibleValues)
+        public static Tuple<int[][], BitArray[][], bool> AssignForcedCells(int[][] board, BitArray[][] possibleValues)
         {
             bool changed = false;
             for(int i = 0; i < board.Length; i++)

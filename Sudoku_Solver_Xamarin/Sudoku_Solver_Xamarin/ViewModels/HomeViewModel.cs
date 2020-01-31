@@ -110,11 +110,12 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             Thread thread = new Thread(() =>
             {
                 IsLoading = true;
-                int[][] boardArray = CollectionToIntArray(Board);
+                int[][] boardArray = BoardInitiation.CollectionToIntArray(Board);
                 boardArray = Solver.PuzzleSolver(boardArray, GroupGetter.GetStandardGroups(Board));
-                IntArrayToCollection(boardArray);
+                bool solved = PuzzleVerifier.VerifyPuzzle(boardArray, GroupGetter.GetStandardGroups(Board));
+                UpdateStatus(solved ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED);
+                /*if (solved)*/ BoardInitiation.IntArrayToCollection(boardArray, Board);
                 IsLoading = false;
-                UpdateStatus(PuzzleVerifier.VerifyPuzzle(boardArray, GroupGetter.GetStandardGroups(Board)) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED);
             });
             thread.Start();
         }
@@ -135,43 +136,9 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         {
             StatusText = MagicStrings.VERIFYING;
             IsLoading = true;
-            bool verify = PuzzleVerifier.VerifyPuzzle(CollectionToIntArray(Board), GroupGetter.GetStandardGroups(Board));
+            bool verify = PuzzleVerifier.VerifyPuzzle(BoardInitiation.CollectionToIntArray(Board), GroupGetter.GetStandardGroups(Board));
             IsLoading = false;
             UpdateStatus(verify ? MagicStrings.VALID_SOLUTION : MagicStrings.INVALID_SOLUTION);
-        }
-
-        private void IntArrayToCollection(int[][] board)
-        {
-            for(int i = 0; i < board.Length; i++)
-            {
-                for(int j = 0; j < board[i].Length; j++)
-                {
-                    int digit = board[i][j];
-                    if (digit != 0)
-                    {
-                        Board[i][j].CellValue = board[i][j].ToString();
-                    }
-                    else Board[i][j].CellValue = "";
-                }
-            }
-        }
-
-        private int[][] CollectionToIntArray(ObservableCollection<ObservableCollection<ObservableCell>> board)
-        {
-            int[][] boardArray = new int[board.Count][];
-            for(int i =0; i < board.Count; i++)
-            {
-                boardArray[i] = new int[board[i].Count];
-                for(int j = 0; j < board[i].Count; j++)
-                {
-                    string digit = board[i][j].CellValue;
-                    int number;
-                    if (digit.Length == 0) number = 0;
-                    else number = Convert.ToInt32(digit);
-                    boardArray[i][j] = number;
-                }
-            }
-            return boardArray;
         }
 
         public void DigitSelected(object digit)
