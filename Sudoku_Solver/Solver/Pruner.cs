@@ -29,7 +29,7 @@ namespace Sudoku_Solver.Solver
             while (changed)
             {
                 possibleValues = PruneAllCells(board, possibleValues, groups);
-                var result = AssignForcedCells(board, possibleValues);
+                var result = AssignForcedCells(board, possibleValues, groups);
                 board = result.Item1;
                 possibleValues = result.Item2;
                 changed = result.Item3;
@@ -122,7 +122,7 @@ namespace Sudoku_Solver.Solver
                                     {
                                         board[i][j] = unique.First();
                                         possibleValues[i][j] = new BitArray(board.Length, false);
-                                        possibleValues = PruneAllCells(board, possibleValues, groups);
+                                        possibleValues = UpdatedChangedPossibleValues(possibleValues, new Tuple<int, int>(i, j), groups, board[i][j]);
                                         changed = true;
                                         break;
                                     }
@@ -136,7 +136,8 @@ namespace Sudoku_Solver.Solver
             return new Tuple<int[][], BitArray[][], bool>(board, possibleValues, changed);
         }
 
-        public static Tuple<int[][], BitArray[][], bool> AssignForcedCells(int[][] board, BitArray[][] possibleValues)
+        public static Tuple<int[][], BitArray[][], bool> AssignForcedCells(int[][] board, BitArray[][] possibleValues, 
+                                                                           List<List<List<Tuple<int,int>>>> groups)
         {
             bool changed = false;
             for(int i = 0; i < board.Length; i++)
@@ -153,6 +154,7 @@ namespace Sudoku_Solver.Solver
                                 {
                                     board[i][j] = k+1;
                                     possibleValues[i][j] = new BitArray(board.Length, false);
+                                    possibleValues = UpdatedChangedPossibleValues(possibleValues, new Tuple<int, int>(i, j), groups, k + 1);
                                     changed = true;
                                     break;
                                 }
@@ -162,6 +164,25 @@ namespace Sudoku_Solver.Solver
                 }
             }
             return new Tuple<int[][], BitArray[][], bool>(board, possibleValues, changed);
+        }
+
+        private static BitArray[][] UpdatedChangedPossibleValues(BitArray[][] possibleValues, Tuple<int,int> cellLocation, 
+                                                                 List<List<List<Tuple<int,int>>>> groups, int cellValue)
+        {
+            foreach(var grouping in groups)
+            {
+                foreach(var group in grouping)
+                {
+                    if(group.Contains(cellLocation))
+                    {
+                        foreach(var location in group)
+                        {
+                            possibleValues[location.Item1][location.Item2][cellValue - 1] = false;
+                        }
+                    }
+                }
+            }
+            return possibleValues;
         }
 
         public static Int32 GetCardinality(BitArray bitArray)

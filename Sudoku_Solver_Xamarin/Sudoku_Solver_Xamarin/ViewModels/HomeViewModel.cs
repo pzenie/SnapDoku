@@ -10,7 +10,6 @@ using Plugin.Media.Abstractions;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Puzzle_Image_Recognition.Sudoku_Normal;
-using Sudoku_Solver.Data;
 using Sudoku_Solver.Solver;
 using Sudoku_Solver_Xamarin.DependencyServiceInterfaces;
 using Sudoku_Solver_Shared.Models;
@@ -23,9 +22,9 @@ namespace Sudoku_Solver_Xamarin.ViewModels
     class HomeViewModel : PropertyChangedBase
     {
         private readonly SudokuImageParser parser;
-        private int curPuzzle = 0;
 
         public ObservableCollection<ObservableCollection<ObservableCell>> Board { get; set; }
+
 
         private bool isLoading;
         public bool IsLoading
@@ -114,19 +113,19 @@ namespace Sudoku_Solver_Xamarin.ViewModels
                 boardArray = Solver.PuzzleSolver(boardArray, GroupGetter.GetStandardGroups(Board));
                 bool solved = PuzzleVerifier.VerifyPuzzle(boardArray, GroupGetter.GetStandardGroups(Board));
                 UpdateStatus(solved ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED);
-                /*if (solved)*/ BoardInitiation.IntArrayToCollection(boardArray, Board);
+                if (solved) BoardInitiation.IntArrayToCollection(boardArray, Board);
                 IsLoading = false;
             });
             thread.Start();
         }
         private void UpdateStatus(string message)
         {
-            StatusText = message;
             Thread messageThread = new Thread(() =>
             {
+                if (ShowSnackbar) ShowSnackbar = false;
+                StatusText = message;
                 ShowSnackbar = true;
-                DateTime to = DateTime.Now.AddMilliseconds(3000);
-                while (DateTime.Now < to) { }
+                Thread.Sleep(3000);
                 ShowSnackbar = false;
             });
             messageThread.Start();
@@ -134,7 +133,6 @@ namespace Sudoku_Solver_Xamarin.ViewModels
 
         public void VerifyPuzzle()
         {
-            StatusText = MagicStrings.VERIFYING;
             IsLoading = true;
             bool verify = PuzzleVerifier.VerifyPuzzle(BoardInitiation.CollectionToIntArray(Board), GroupGetter.GetStandardGroups(Board));
             IsLoading = false;
@@ -174,30 +172,72 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             }
         }
 
-        public void NewPuzzle()
+        private enum Level_e
         {
-            ClearPuzzle();
-            string puzzle = TestInputs.UNSOLVED_BOARD_EASY;
-            switch (curPuzzle)
-            {
-                case 0:
-                    puzzle = TestInputs.UNSOLVED_BOARD_EASY;
-                    break;
-                case 1:
-                    puzzle = TestInputs.UNSOLVED_BOARD_MEDIUM;
-                    break;
-                case 2:
-                    puzzle = TestInputs.UNSOLVED_BOARD_HARD;
-                    break;
-                case 3:
-                    puzzle = TestInputs.UNSOLVED_BOARD_EXTREME;
-                    curPuzzle = -1;
-                    break;
-            }
-            curPuzzle++;
-            BoardInitiation.InitCommaSeperatedBoard(Board, puzzle);
+            Nevermind,
+            Very_Easy,
+            Easy,
+            Medium,
+            Hard,
+            Very_Hard
         }
 
+        public async void NewPuzzle()
+        {
+            ClearPuzzle();
+            string levelChoice = await Application.Current.MainPage.DisplayActionSheet("Select puzzle difficulty", Level_e.Nevermind.ToString(), null, 
+                                                                                        new string[] { Level_e.Very_Easy.ToString(), Level_e.Easy.ToString(), 
+                                                                                                       Level_e.Medium.ToString(), Level_e.Hard.ToString(), 
+                                                                                                       Level_e.Very_Hard.ToString()});
+            if (levelChoice != "Nevermind")
+            {
+                Thread generatePuzzle = new Thread(() =>
+                {
+                    IsLoading = true;
+                    Level_e level = (Level_e)Enum.Parse(typeof(Level_e), levelChoice);
+                    Random r = new Random(DateTime.Now.Millisecond + DateTime.Now.Second + DateTime.Now.Minute + DateTime.Now.Hour);
+                    int cut;
+                    switch(level)
+                    {
+                        case Level_e.Very_Easy:
+                            cut = 5;
+                            break;
+                        case Level_e.Easy:
+                            cut = 10;
+                            break;
+                        case Level_e.Medium:
+                            cut = 15;
+                            break;
+                        case Level_e.Hard:
+                            cut = 20;
+                            break;
+                        case Level_e.Very_Hard:
+                            cut = 25;
+                            break;
+                        default:
+                            cut = 15;
+                            break;
+                    }
+                    SudokuSharp.Board s = SudokuSharp.Factory.Puzzle(r.Next(), cut, cut, cut);
+                    ConvertSudokuSharpBoardToCollection(s);
+                    IsLoading = false;
+                });
+                generatePuzzle.Start();
+            }
+        }
+
+        private void ConvertSudokuSharpBoardToCollection(SudokuSharp.Board board)
+        {
+            for(int i = 0; i < Board.Count; i++)
+            {
+                for(int j = 0; j < Board[i].Count; j++)
+                {
+                    string value = board.GetCell(new SudokuSharp.Location(i, j)).ToString();
+                    if (value != "0") Board[i][j].CellValue = value;
+                    else Board[i][j].CellValue = string.Empty;
+                }
+            }
+        }
         public async void TakeImageAndParse()
         {
             //TODO Should replace this with a messaging service to maintain seperation of viewmodel and view

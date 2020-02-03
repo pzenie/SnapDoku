@@ -37,10 +37,10 @@ namespace Sudoku_Solver_WPF.ViewModels
             Thread thread = new Thread(() =>
             {
                 var groups = GroupGetter.GetStandardGroups(Board);
-                BoardModel bModel = CollectionToBoardModel(Board);
-                bModel = Solver.PuzzleSolver(bModel, groups);
-                BoardModelToCollection(bModel);
-                ValidSolution = PuzzleVerifier.VerifyPuzzle(bModel, groups) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED;
+                int[][] boardArray = BoardInitiation.CollectionToIntArray(Board);
+                boardArray = Solver.PuzzleSolver(boardArray, groups);
+                ValidSolution = PuzzleVerifier.VerifyPuzzle(boardArray, groups) ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED;
+                if (ValidSolution == MagicStrings.SOLVED) BoardInitiation.IntArrayToCollection(boardArray, Board);
             });
             thread.Start();
         }
@@ -48,37 +48,8 @@ namespace Sudoku_Solver_WPF.ViewModels
         public void VerifyPuzzle()
         {
             var groups = GroupGetter.GetStandardGroups(Board);
-            bool verify = PuzzleVerifier.VerifyPuzzle(CollectionToBoardModel(Board), groups);
+            bool verify = PuzzleVerifier.VerifyPuzzle(BoardInitiation.CollectionToIntArray(Board), groups);
             ValidSolution = verify ? MagicStrings.VALID_SOLUTION : MagicStrings.INVALID_SOLUTION;
-        }
-
-        private void BoardModelToCollection(BoardModel board)
-        {
-            for (int i = 0; i < board.BoardValues.Length; i++)
-            {
-                for (int j = 0; j < board.BoardValues[i].Length; j++)
-                {
-                    Board[i][j].CellValue = board.BoardValues[i][j].CellValue;
-                }
-            }
-        }
-
-        private BoardModel CollectionToBoardModel(ObservableCollection<ObservableCollection<ObservableCell>> board)
-        {
-            int[] columns = new int[board.Count];
-            for (int i = 0; i < board.Count; i++)
-            {
-                columns[i] = board[i].Count;
-            }
-            BoardModel bModel = new BoardModel(board.Count, columns);
-            for (int i = 0; i < board.Count; i++)
-            {
-                for (int j = 0; j < board[i].Count; j++)
-                {
-                    bModel.BoardValues[i][j] = new Sudoku_Solver.Data.Cell(i, j, board[i][j].CellValue, board.Count);
-                }
-            }
-            return bModel;
         }
     }
 }

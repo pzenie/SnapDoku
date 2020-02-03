@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
   </PropertyGroup>
 
@@ -35,6 +35,12 @@
     <ProjectReference Include="..\..\Puzzle_Image_Recognition\Puzzle_Image_Recognition.csproj" />
     <ProjectReference Include="..\..\Sudoku_Solver\Sudoku_Solver.csproj" />
     <ProjectReference Include="..\..\Sudoku_Solver_Shared\Sudoku_Solver_Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LibSudokuSharp">
+      <HintPath>Resources\LibSudokuSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
