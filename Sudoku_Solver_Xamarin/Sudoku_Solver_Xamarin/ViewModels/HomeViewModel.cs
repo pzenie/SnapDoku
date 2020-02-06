@@ -25,7 +25,6 @@ namespace Sudoku_Solver_Xamarin.ViewModels
 
         public ObservableCollection<ObservableCollection<ObservableCell>> Board { get; set; }
 
-
         private bool isLoading;
         public bool IsLoading
         {
@@ -172,7 +171,7 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             }
         }
 
-        private enum Level_e
+        public enum Level_e
         {
             Nevermind,
             Very_Easy,
@@ -186,43 +185,40 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         {
             ClearPuzzle();
             string levelChoice = await Application.Current.MainPage.DisplayActionSheet("Select puzzle difficulty", Level_e.Nevermind.ToString(), null, 
-                                                                                        new string[] { Level_e.Very_Easy.ToString(), Level_e.Easy.ToString(), 
+                                                                                        new string[] { Level_e.Very_Easy.ToString().Replace('_', ' '), Level_e.Easy.ToString(), 
                                                                                                        Level_e.Medium.ToString(), Level_e.Hard.ToString(), 
-                                                                                                       Level_e.Very_Hard.ToString()});
-            if (levelChoice != "Nevermind")
+                                                                                                       Level_e.Very_Hard.ToString().Replace('_', ' ')});
+            int cut = GetCutLevel(levelChoice);
+            if (cut != 0)
             {
                 Thread generatePuzzle = new Thread(() =>
                 {
                     IsLoading = true;
-                    Level_e level = (Level_e)Enum.Parse(typeof(Level_e), levelChoice);
                     Random r = new Random(DateTime.Now.Millisecond + DateTime.Now.Second + DateTime.Now.Minute + DateTime.Now.Hour);
-                    int cut;
-                    switch(level)
-                    {
-                        case Level_e.Very_Easy:
-                            cut = 5;
-                            break;
-                        case Level_e.Easy:
-                            cut = 10;
-                            break;
-                        case Level_e.Medium:
-                            cut = 15;
-                            break;
-                        case Level_e.Hard:
-                            cut = 20;
-                            break;
-                        case Level_e.Very_Hard:
-                            cut = 25;
-                            break;
-                        default:
-                            cut = 15;
-                            break;
-                    }
                     SudokuSharp.Board s = SudokuSharp.Factory.Puzzle(r.Next(), cut, cut, cut);
                     ConvertSudokuSharpBoardToCollection(s);
                     IsLoading = false;
                 });
                 generatePuzzle.Start();
+            }
+        }
+
+        private int GetCutLevel(string level)
+        {
+            switch (level.Replace(' ', '_'))
+            {
+                case nameof(Level_e.Very_Easy):
+                    return 5;
+                case nameof(Level_e.Easy):
+                    return 10;
+                case nameof(Level_e.Medium):
+                    return 15;
+                case nameof(Level_e.Hard):
+                    return 20;
+                case nameof(Level_e.Very_Hard):
+                    return 25;
+                default:
+                    return 0;
             }
         }
 

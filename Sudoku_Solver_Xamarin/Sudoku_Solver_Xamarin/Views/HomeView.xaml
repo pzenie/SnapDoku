@@ -140,9 +140,9 @@
                 <flex:FlexButton Grid.Row="2" Grid.Column="1" Text="7" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="7" Style="{DynamicResource Key=Digit_Button}"/>
                 <flex:FlexButton Grid.Row="2" Grid.Column="2" Text="8" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="8" Style="{DynamicResource Key=Digit_Button}"/>
                 <flex:FlexButton Grid.Row="2" Grid.Column="3" Text="9" ClickedCommand="{Binding DigitClickedCommand}" ClickedCommandParameter="9" Style="{DynamicResource Key=Digit_Button}"/>
-                <ImageButton Grid.Row="2" Grid.Column="4" Source="{views:ImageResource Sudoku_Solver_Xamarin.Resources.Delete_Icon.png}" 
+                <ImageButton Grid.Row="0" Grid.Column="4" Grid.RowSpan="3" Source="{views:ImageResource Sudoku_Solver_Xamarin.Resources.Delete_Icon.png}" 
                              WidthRequest="70" HeightRequest="50" CornerRadius="20" Command="{Binding DigitClickedCommand}" CommandParameter="" 
-                             BackgroundColor="#DAAD86" HorizontalOptions="Center" VerticalOptions="Center" Padding="0,0,5,0" />
+                             BackgroundColor="#DAAD86" HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Padding="0,0,5,0" />
             </Grid>
             <Button Grid.Row="2" Grid.Column="0" Text="Solve" Command="{Binding SolvePuzzleCommand}" Style="{DynamicResource Key=Main_Button}"/>
             <Button Grid.Row="2" Grid.Column="1" Text="Upload" Command="{Binding TakeImageAndParseCommand}" Style="{DynamicResource Key=Main_Button}"/>

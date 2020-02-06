@@ -130,4 +130,16 @@
   <data name="test4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\test4.jpeg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="test5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\test5.jpeg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="test6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\test6.jpeg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="test7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\test7.jpeg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="test8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\test8.jpeg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

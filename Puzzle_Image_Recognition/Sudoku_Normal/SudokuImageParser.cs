@@ -26,7 +26,7 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
                     {
                         z.ExtractToDirectory(path);
                     }
-                    catch (Exception) { /* Prlly just means the file already exists */ }
+                    catch (Exception) { /* Prlly just means the file already exists, TODO should find a better way to handle this */ }
 
                     path += "/digits";
                     if (Directory.Exists(path))
@@ -52,6 +52,8 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
             Point[] corners = FindCorners(border);
 
             Mat undistorted = CropAndWarp(sudoku, corners);
+
+            Cv2.Resize(undistorted, undistorted, new Size(500, 500));
 
             Mat undistortedPrepped = PrepImage(undistorted, true);
 
@@ -126,7 +128,6 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
             Cv2.Threshold(numberBox, numberBox, 200, 255, ThresholdTypes.Otsu);
             numberBox.ConvertTo(numberBox, MatType.CV_32FC1, 1.0 / 255.0);
             Cv2.Resize(numberBox, numberBox, new Size(16, 16), 0, 0, InterpolationFlags.Nearest);
-
 
             numberBox = numberBox.Reshape(1, 1);
 

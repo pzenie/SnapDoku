@@ -99,5 +99,45 @@ namespace ImageTester.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] test5 {
+            get {
+                object obj = ResourceManager.GetObject("test5", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] test6 {
+            get {
+                object obj = ResourceManager.GetObject("test6", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] test7 {
+            get {
+                object obj = ResourceManager.GetObject("test7", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] test8 {
+            get {
+                object obj = ResourceManager.GetObject("test8", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
