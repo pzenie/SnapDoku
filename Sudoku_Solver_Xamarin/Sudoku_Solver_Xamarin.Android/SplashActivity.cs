@@ -17,19 +17,17 @@ namespace Sudoku_Solver_Xamarin.Droid
     [Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true, NoHistory = true)]
     public class SplashActivity : AppCompatActivity
     {
-        static readonly string TAG = "X:" + typeof(SplashActivity).Name;
-        private static ProgressBar circularbar;
-        private int progressStatus = 0, progressStatus1 = 100;
         public override void OnCreate(Bundle savedInstanceState, PersistableBundle persistentState)
         {
             base.OnCreate(savedInstanceState, persistentState);
-            Log.Debug(TAG, "SplashActivity.OnCreate");
+            SetContentView(Resource.Layout.SplashLayout);
         }
 
         // Launches the startup task
         protected override void OnResume()
         {
             base.OnResume();
+            SetContentView(Resource.Layout.SplashLayout);
             Task startupWork = new Task(() => { SimulateStartup(); });
             startupWork.Start();
         }
