@@ -5798,16 +5798,13 @@ namespace Sudoku_Solver_Xamarin.Droid
 			public const int notify_panel_notification_icon_bg = 2131165299;
 			
 			// aapt resource value: 0x7F070074
-			public const int splash_logo = 2131165300;
+			public const int splash_screen = 2131165300;
 			
 			// aapt resource value: 0x7F070075
-			public const int splash_screen = 2131165301;
+			public const int tooltip_frame_dark = 2131165301;
 			
 			// aapt resource value: 0x7F070076
-			public const int tooltip_frame_dark = 2131165302;
-			
-			// aapt resource value: 0x7F070077
-			public const int tooltip_frame_light = 2131165303;
+			public const int tooltip_frame_light = 2131165302;
 			
 			static Drawable()
 			{
@@ -6777,17 +6774,8 @@ namespace Sudoku_Solver_Xamarin.Droid
 		public partial class Mipmap
 		{
 			
-			// aapt resource value: 0x7F0C0001
-			public const int icon = 2131492865;
-			
-			// aapt resource value: 0x7F0C0002
-			public const int icon_round = 2131492866;
-			
 			// aapt resource value: 0x7F0C0000
 			public const int ic_launcher = 2131492864;
-			
-			// aapt resource value: 0x7F0C0003
-			public const int launcher_foreground = 2131492867;
 			
 			static Mipmap()
 			{

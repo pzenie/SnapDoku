@@ -1,5 +1,4 @@
-﻿using Sudoku_Solver.Data;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,14 @@ namespace Sudoku_Solver.Solver
 {
     internal static class Backtracker
     {
+        /// <summary>
+        /// Prunes and then backtracks recursively until solved
+        /// </summary>
+        /// <param name="board">The sudoku board to solve</param>
+        /// <param name="possibleValues">The possible values for every cell in the board</param>
+        /// <param name="curLocation">The current location in the board to fill</param>
+        /// <param name="groups">The groups each cell belongs to</param>
+        /// <returns>the solved board or partially solved board if failure</returns>
         public static int[][] BackTrack(int[][] board, BitArray[][] possibleValues, Tuple<int, int> curLocation,
                                            List<List<List<Tuple<int, int>>>> groups)
         {
@@ -40,6 +47,12 @@ namespace Sudoku_Solver.Solver
             else return null;
         }
 
+        /// <summary>
+        /// Checks if there are no possible values for any cells in the board
+        /// </summary>
+        /// <param name="board">The board to check</param>
+        /// <param name="possibleValues">The possible values for every cell in the board</param>
+        /// <returns>returns true if there are any cells with no possible values</returns>
         private static bool NoPossibleValuesForAll(int[][] board, BitArray[][] possibleValues)
         {
             for(int i = 0; i < board.Length; i++)
@@ -57,6 +70,12 @@ namespace Sudoku_Solver.Solver
             }
             return false;
         }
+
+        /// <summary>
+        /// Deep copies a 2d int array
+        /// </summary>
+        /// <param name="board">The 2d int array to copy</param>
+        /// <returns>Deep copied 2d int array</returns>
         private static int[][] DeepCopyIntArray(int[][] board)
         {
             int[][] newBoard = new int[board.Length][];
@@ -71,6 +90,11 @@ namespace Sudoku_Solver.Solver
             return newBoard;
         }
 
+        /// <summary>
+        /// Deep copies a 2d bitarray array
+        /// </summary>
+        /// <param name="possibleValues">The 2d Bitarray to deep copy</param>
+        /// <returns>Deep copied 2d bitarray</returns>
         private static BitArray[][] DeepCopyBitArray(BitArray[][] possibleValues)
         {
             BitArray[][] newPossibleValues = new BitArray[possibleValues.Length][];
@@ -89,6 +113,12 @@ namespace Sudoku_Solver.Solver
             return newPossibleValues;
         }
 
+        /// <summary>
+        /// Skips past the already filled cells and goes to the next empty cell in the board
+        /// </summary>
+        /// <param name="board">The board to find the next empty cell</param>
+        /// <param name="location">The current location on the  board</param>
+        /// <returns>The location of the next empty cell</returns>
         public static Tuple<int,int> SkipFilled(int[][] board, Tuple<int,int> location)
         {
             while (board[location.Item1][location.Item2] != 0)
@@ -99,6 +129,13 @@ namespace Sudoku_Solver.Solver
             return location;
         }
 
+        /// <summary>
+        /// Gets the next coordinate in order based off board size and current location
+        /// </summary>
+        /// <param name="x">Current x coordinate</param>
+        /// <param name="y">Current y coordinate</param>
+        /// <param name="size">The size of the board</param>
+        /// <returns>The next coordinate</returns>
         private static Tuple<int, int> GetNextCoordinates(int x, int y, int size)
         {
             if (y + 1 < size)

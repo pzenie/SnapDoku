@@ -17,7 +17,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kawaian.OpenCVSharp" Version="1.0.0" />
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.991537" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="OpenCvSharp">
+      <HintPath>Properties\OpenCvSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenCvSharp.Android">
+      <HintPath>Properties\OpenCvSharp.Android.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

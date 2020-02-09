@@ -5,6 +5,12 @@ namespace Sudoku_Solver.Solver
 {
     public static class PuzzleVerifier
     {
+        /// <summary>
+        /// Verifiies the puzzle is solved
+        /// </summary>
+        /// <param name="board">The board to check</param>
+        /// <param name="groups">The groups to check with</param>
+        /// <returns>True if solved else false</returns>
         public static bool VerifyPuzzle(int[][] board, List<List<List<Tuple<int, int>>>> groups)
         {
             bool verify = true;
@@ -15,6 +21,12 @@ namespace Sudoku_Solver.Solver
             return verify;
         }
 
+        /// <summary>
+        /// Verifies each group is valid
+        /// </summary>
+        /// <param name="board">The board to check</param>
+        /// <param name="groups">The groups to check</param>
+        /// <returns>True if all groups valid and filled else false</returns>
         private static bool VerifyGroups(int[][] board, List<List<Tuple<int, int>>> groups)
         {
             foreach (List<Tuple<int, int>> cellLocations in groups)

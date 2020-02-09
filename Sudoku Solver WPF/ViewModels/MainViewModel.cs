@@ -1,7 +1,6 @@
 ﻿using Caliburn.Micro;
 using System.Threading;
 using Sudoku_Solver_WPF.Resources;
-using Sudoku_Solver.Data;
 using Sudoku_Solver.Solver;
 using Sudoku_Solver_Shared.Initiation;
 using System.Collections.ObjectModel;
@@ -12,7 +11,6 @@ namespace Sudoku_Solver_WPF.ViewModels
     internal class MainViewModel : PropertyChangedBase
     {
         public ObservableCollection<ObservableCollection<ObservableCell>> Board { get; set; }
-
 
         private string validSolution;
         public string ValidSolution

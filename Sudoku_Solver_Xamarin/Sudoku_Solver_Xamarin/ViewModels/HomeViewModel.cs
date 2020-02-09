@@ -16,15 +16,23 @@ using Sudoku_Solver_Shared.Models;
 using Sudoku_Solver_Xamarin.Resources;
 using Xamarin.Forms;
 using Sudoku_Solver_Shared.Initiation;
+using Android.Graphics;
 
 namespace Sudoku_Solver_Xamarin.ViewModels
 {
     class HomeViewModel : PropertyChangedBase
     {
+        // Used for parsing sudoku boards from images
         private readonly SudokuImageParser parser;
 
+        /// <summary>
+        /// Holds all data for sudoku board
+        /// </summary>
         public ObservableCollection<ObservableCollection<ObservableCell>> Board { get; set; }
 
+        /// <summary>
+        /// Tied to any loading proccesses i.e. loading spinners
+        /// </summary>
         private bool isLoading;
         public bool IsLoading
         {
@@ -36,6 +44,9 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             }
         }
 
+        /// <summary>
+        /// Whether to show the snackbar or not
+        /// </summary>
         private bool showSnackbar;
         public bool ShowSnackbar
         {
@@ -47,6 +58,9 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             }
         }
 
+        /// <summary>
+        /// Text displayed in the snackbar
+        /// </summary>
         private string statusText;
         public string StatusText
         {
@@ -58,6 +72,9 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             }
         }
 
+        /// <summary>
+        /// Init commands, set default values, set board with basic 9x9 values, init image parser and train knn model
+        /// </summary>
         public HomeViewModel()
         {
             SolvePuzzleCommand = new Command(execute: () =>
@@ -103,20 +120,52 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         public ICommand CellSelectedCommand { get; }
         public ICommand DigitClickedCommand { get; }
 
-        public void SolvePuzzle()
+        /// <summary>
+        /// Checks if user wants to clear puzzle and then clears if so
+        /// </summary>
+        private async void ClearPuzzle()
         {
-            Thread thread = new Thread(() =>
+            bool clear = await Application.Current.MainPage.DisplayAlert("Clear Puzzle", "Are you sure you want to clear?", "Clear", "Nevermind");
+            if (clear)
             {
-                IsLoading = true;
-                int[][] boardArray = BoardInitiation.CollectionToIntArray(Board);
-                boardArray = Solver.PuzzleSolver(boardArray, GroupGetter.GetStandardGroups(Board));
-                bool solved = PuzzleVerifier.VerifyPuzzle(boardArray, GroupGetter.GetStandardGroups(Board));
-                UpdateStatus(solved ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED);
-                if (solved) BoardInitiation.IntArrayToCollection(boardArray, Board);
-                IsLoading = false;
-            });
-            thread.Start();
+                BoardInitiation.ClearBoard(Board);
+            }
         }
+
+        /// <summary>
+        /// Checks if really want to solve, then creates thread to solve the puzzle and verifies if it was solved correctly or not.
+        /// </summary>
+        public async void SolvePuzzle()
+        {
+            bool solve = await Application.Current.MainPage.DisplayAlert("Solve Puzzle", "Are you sure you want to solve the puzzle?", "Solve", "Nevermind");
+            if (solve)
+            {
+                Thread thread = new Thread(() =>
+                {
+                    try
+                    {
+                        IsLoading = true;
+                        int[][] boardArray = BoardInitiation.CollectionToIntArray(Board);
+                        boardArray = Solver.PuzzleSolver(boardArray, GroupGetter.GetStandardGroups(Board));
+                        bool solved = PuzzleVerifier.VerifyPuzzle(boardArray, GroupGetter.GetStandardGroups(Board));
+                        UpdateStatus(solved ? MagicStrings.SOLVED : MagicStrings.NOT_SOLVED);
+                        if (solved) BoardInitiation.IntArrayToCollection(boardArray, Board);
+                        IsLoading = false;
+                    }
+                    catch (Exception)
+                    {
+                        UpdateStatus(MagicStrings.NOT_SOLVED);
+                        IsLoading = false;
+                    }
+                });
+                thread.Start();
+            }
+        }
+
+        /// <summary>
+        /// Updates the status message and displays the snackbar with that message
+        /// </summary>
+        /// <param name="message">The message to update with</param>
         private void UpdateStatus(string message)
         {
             Thread messageThread = new Thread(() =>
@@ -130,6 +179,9 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             messageThread.Start();
         }
 
+        /// <summary>
+        /// Verifies the puzzle is correctly solved
+        /// </summary>
         public void VerifyPuzzle()
         {
             IsLoading = true;
@@ -138,6 +190,10 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             UpdateStatus(verify ? MagicStrings.VALID_SOLUTION : MagicStrings.INVALID_SOLUTION);
         }
 
+        /// <summary>
+        /// Puts the specified digit into the selected cell
+        /// </summary>
+        /// <param name="digit"></param>
         public void DigitSelected(object digit)
         {
             string d = (string)digit;
@@ -154,11 +210,10 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             }
         }
 
-        public void ClearPuzzle()
-        {
-            BoardInitiation.ClearBoard(Board);
-        }
-
+        /// <summary>
+        /// Sets the selected cell value to true
+        /// </summary>
+        /// <param name="cell"></param>
         public void CellSelected(object cell)
         {
             ObservableCell c = (ObservableCell)cell;
@@ -181,9 +236,11 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             Very_Hard
         }
 
+        /// <summary>
+        /// Generates a new puzzle based off the selected difficulty
+        /// </summary>
         public async void NewPuzzle()
         {
-            ClearPuzzle();
             string levelChoice = await Application.Current.MainPage.DisplayActionSheet("Select puzzle difficulty", Level_e.Nevermind.ToString(), null, 
                                                                                         new string[] { Level_e.Very_Easy.ToString().Replace('_', ' '), Level_e.Easy.ToString(), 
                                                                                                        Level_e.Medium.ToString(), Level_e.Hard.ToString(), 
@@ -194,6 +251,7 @@ namespace Sudoku_Solver_Xamarin.ViewModels
                 Thread generatePuzzle = new Thread(() =>
                 {
                     IsLoading = true;
+                    BoardInitiation.ClearBoard(Board);
                     Random r = new Random(DateTime.Now.Millisecond + DateTime.Now.Second + DateTime.Now.Minute + DateTime.Now.Hour);
                     SudokuSharp.Board s = SudokuSharp.Factory.Puzzle(r.Next(), cut, cut, cut);
                     ConvertSudokuSharpBoardToCollection(s);
@@ -203,23 +261,22 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets the cut level to use for the puzzle generator based off the difficulty level selected
+        /// </summary>
+        /// <param name="level">Selected difficulty level</param>
+        /// <returns>The cut level to cut the puzzle with</returns>
         private int GetCutLevel(string level)
         {
-            switch (level.Replace(' ', '_'))
+            return (level.Replace(' ', '_')) switch
             {
-                case nameof(Level_e.Very_Easy):
-                    return 5;
-                case nameof(Level_e.Easy):
-                    return 10;
-                case nameof(Level_e.Medium):
-                    return 15;
-                case nameof(Level_e.Hard):
-                    return 20;
-                case nameof(Level_e.Very_Hard):
-                    return 25;
-                default:
-                    return 0;
-            }
+                nameof(Level_e.Very_Easy) => 5,
+                nameof(Level_e.Easy) => 10,
+                nameof(Level_e.Medium) => 15,
+                nameof(Level_e.Hard) => 20,
+                nameof(Level_e.Very_Hard) => 25,
+                _ => 0,
+            };
         }
 
         private void ConvertSudokuSharpBoardToCollection(SudokuSharp.Board board)
@@ -234,6 +291,10 @@ namespace Sudoku_Solver_Xamarin.ViewModels
                 }
             }
         }
+
+        /// <summary>
+        /// Allows you to choose to either take or upload a photo and then parses the image for the sudoku board
+        /// </summary>
         public async void TakeImageAndParse()
         {
             //TODO Should replace this with a messaging service to maintain seperation of viewmodel and view
@@ -242,6 +303,7 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             if(existing)
             {
                 photo = await DependencyService.Get<IPhotoPickerService>().GetImageStreamAsync();
+
             }
             else
             {
@@ -249,14 +311,33 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             }            
             if (photo != null)
             {
-                using (var memoryStream = new MemoryStream())
+                Thread thread = new Thread(() => 
                 {
-                    photo.CopyTo(memoryStream);
-                    byte[] photoBytes = memoryStream.ToArray();
-                    ParsePuzzle(photoBytes);
-                }
+                    IsLoading = true;
+                    Bitmap source = BitmapFactory.DecodeStream(photo);
+                    if (source.Width > source.Height)
+                    {
+                        Matrix matrix = new Matrix();
+                        matrix.PostRotate(90);
+                        source = Bitmap.CreateBitmap(source, 0, 0, source.Width, source.Height, matrix, false);
+                    }
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        source.Compress(Bitmap.CompressFormat.Png, 0, memoryStream);
+                        memoryStream.Position = 0;
+                        byte[] photoBytes = memoryStream.ToArray();
+                        ParsePuzzle(photoBytes);
+                    }
+                    IsLoading = false;
+                });
+                thread.Start();
             }
         }
+
+        /// <summary>
+        /// Takes a photo with the camera
+        /// </summary>
+        /// <returns>The stream of the taken photo</returns>
         private async Task<Stream> TakePhoto()
         {
             PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
@@ -268,30 +349,52 @@ namespace Sudoku_Solver_Xamarin.ViewModels
             if (status == PermissionStatus.Granted)
             {
                 var photo = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions() { });
-                return photo.GetStream();
+                if (photo != null)
+                {
+                    return photo.GetStream();
+                }
             }
             return null;
         }
     
-
+        /// <summary>
+        /// Parses an image of a sudoku board using the solver and updates the board with the parsed values
+        /// </summary>
+        /// <param name="file">The image file in byte[]</param>
         private void ParsePuzzle(byte[] file)
         {
-            int[,] board = parser.Solve(file);
-
-            for (int i = 0; i < 9; i++)
+            try
             {
-                for (int j = 0; j < 9; j++)
+                if (file.Length > 0)
                 {
-                    int val = board[i, j];
-                    if (val != 0)
+                    int[,] board = parser.Solve(file);
+
+                    for (int i = 0; i < 9; i++)
                     {
-                        Board[i][j].CellValue = val.ToString();
+                        for (int j = 0; j < 9; j++)
+                        {
+                            int val = board[i, j];
+                            if (val != 0)
+                            {
+                                Board[i][j].CellValue = val.ToString();
+                            }
+                            else
+                            {
+                                Board[i][j].CellValue = string.Empty;
+                            }
+                        }
                     }
-                    else
-                    {
-                        Board[i][j].CellValue = string.Empty;
-                    }
+                    UpdateStatus("Sudoku board parsed!");
                 }
+                else
+                {
+                    UpdateStatus("Could not find a sudoku board");
+                }
+            }
+            catch (Exception)
+            {
+                UpdateStatus("Could not find a sudoku board");
+
             }
         }
     }

@@ -47,6 +47,8 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
         public int[,] Solve(byte[] file)
         {
             Mat sudoku = Cv2.ImDecode(file, ImreadModes.GrayScale);
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            bool passed = Cv2.ImWrite(path + @"/test1.jpg", sudoku);
             Mat border = sudoku.Clone();
             border = PrepImage(border, true);
             Point[] corners = FindCorners(border);
@@ -125,7 +127,7 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
 
             Mat numberBox = new Mat(digit, boundingBox);
 
-            Cv2.Threshold(numberBox, numberBox, 200, 255, ThresholdTypes.Otsu);
+            Cv2.Threshold(numberBox, numberBox, 200, 255, ThresholdTypes.Binary);
             numberBox.ConvertTo(numberBox, MatType.CV_32FC1, 1.0 / 255.0);
             Cv2.Resize(numberBox, numberBox, new Size(16, 16), 0, 0, InterpolationFlags.Nearest);
 
