@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Sudoku_Solver_WPF
+namespace SnapDoku_WPF
 {
     /// <summary>
     /// Interaction logic for App.xaml

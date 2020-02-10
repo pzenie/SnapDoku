@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Android.Content;
 using Xamarin.Forms.Platform.Android;
 
-namespace Sudoku_Solver_Xamarin.Droid
+namespace SnapDoku_Xamarin.Droid
 {
-    [Activity(Label = "Sudoku_Solver_Xamarin", Icon = "@mipmap/ic_launcher", Theme = "@style/MainTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, NoHistory = false)]
+    [Activity(Label = "SnapDoku_Xamarin", Icon = "@mipmap/ic_launcher", Theme = "@style/MainTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, NoHistory = false)]
     public class MainActivity : FormsAppCompatActivity
     {
         internal static MainActivity Instance { get; private set; }

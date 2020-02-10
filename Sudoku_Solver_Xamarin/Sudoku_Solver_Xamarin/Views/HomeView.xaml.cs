@@ -1,9 +1,9 @@
-﻿using Sudoku_Solver_Xamarin.ViewModels;
+﻿using SnapDoku_Xamarin.ViewModels;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Sudoku_Solver_Xamarin.Views
+namespace SnapDoku_Xamarin.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class HomeView : ContentPage

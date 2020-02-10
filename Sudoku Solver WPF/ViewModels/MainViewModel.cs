@@ -1,12 +1,12 @@
 ﻿using Caliburn.Micro;
 using System.Threading;
-using Sudoku_Solver_WPF.Resources;
+using SnapDoku_WPF.Resources;
 using Sudoku_Solver.Solver;
-using Sudoku_Solver_Shared.Initiation;
+using SnapDoku_Shared.Initiation;
 using System.Collections.ObjectModel;
-using Sudoku_Solver_Shared.Models;
+using SnapDoku_Shared.Models;
 
-namespace Sudoku_Solver_WPF.ViewModels
+namespace SnapDoku_WPF.ViewModels
 {
     internal class MainViewModel : PropertyChangedBase
     {

@@ -1,7 +1,7 @@
-﻿using Sudoku_Solver_Xamarin.Views;
+﻿using SnapDoku_Xamarin.Views;
 using Xamarin.Forms;
 
-namespace Sudoku_Solver_Xamarin
+namespace SnapDoku_Xamarin
 {
     public partial class App : Application
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sudoku_Solver.Solver;
-using Sudoku_Solver_Shared.Initiation;
-using Sudoku_Solver_Shared.Models;
+using SnapDoku_Shared.Initiation;
+using SnapDoku_Shared.Models;
 
 namespace Unit_Test.Solver_Tests
 {

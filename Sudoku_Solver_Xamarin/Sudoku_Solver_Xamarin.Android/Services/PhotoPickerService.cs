@@ -10,12 +10,12 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Sudoku_Solver_Xamarin.DependencyServiceInterfaces;
-using Sudoku_Solver_Xamarin.Droid.Services;
+using SnapDoku_Xamarin.DependencyServiceInterfaces;
+using SnapDoku_Xamarin.Droid.Services;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(PhotoPickerService))]
-namespace Sudoku_Solver_Xamarin.Droid.Services
+namespace SnapDoku_Xamarin.Droid.Services
 {
     class PhotoPickerService : IPhotoPickerService
     {

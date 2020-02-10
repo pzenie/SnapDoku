@@ -1,7 +1,7 @@
 ﻿using Caliburn.Micro;
 using System.Collections.Generic;
 
-namespace Sudoku_Solver_Shared.Models
+namespace SnapDoku_Shared.Models
 {
     public class ObservableCell : PropertyChangedBase
     {

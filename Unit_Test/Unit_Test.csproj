@@ -60,9 +60,9 @@
       <Project>{f0fdb3c0-cfae-4f83-ba79-307e892703b8}</Project>
       <Name>Sudoku_Solver</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Sudoku_Solver_Shared\Sudoku_Solver_Shared.csproj">
+    <ProjectReference Include="..\Sudoku_Solver_Shared\SnapDoku_Shared.csproj">
       <Project>{e35f437d-d54a-43cc-84c5-7ade3c04d224}</Project>
-      <Name>Sudoku_Solver_Shared</Name>
+      <Name>SnapDoku_Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

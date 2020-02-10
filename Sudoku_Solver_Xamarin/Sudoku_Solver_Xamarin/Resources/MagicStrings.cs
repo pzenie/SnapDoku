@@ -1,4 +1,4 @@
-﻿namespace Sudoku_Solver_Xamarin.Resources
+﻿namespace SnapDoku_Xamarin.Resources
 {
     internal static class MagicStrings
     {

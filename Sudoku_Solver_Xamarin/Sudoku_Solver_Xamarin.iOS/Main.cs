@@ -5,7 +5,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
-namespace Sudoku_Solver_Xamarin.iOS
+namespace SnapDoku_Xamarin.iOS
 {
     public class Application
     {

@@ -11,14 +11,14 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Puzzle_Image_Recognition.Sudoku_Normal;
 using Sudoku_Solver.Solver;
-using Sudoku_Solver_Xamarin.DependencyServiceInterfaces;
-using Sudoku_Solver_Shared.Models;
-using Sudoku_Solver_Xamarin.Resources;
+using SnapDoku_Xamarin.DependencyServiceInterfaces;
+using SnapDoku_Shared.Models;
+using SnapDoku_Xamarin.Resources;
 using Xamarin.Forms;
-using Sudoku_Solver_Shared.Initiation;
+using SnapDoku_Shared.Initiation;
 using Android.Graphics;
 
-namespace Sudoku_Solver_Xamarin.ViewModels
+namespace SnapDoku_Xamarin.ViewModels
 {
     class HomeViewModel : PropertyChangedBase
     {
@@ -268,15 +268,19 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         /// <returns>The cut level to cut the puzzle with</returns>
         private int GetCutLevel(string level)
         {
-            return (level.Replace(' ', '_')) switch
+            if (level != null)
             {
-                nameof(Level_e.Very_Easy) => 5,
-                nameof(Level_e.Easy) => 10,
-                nameof(Level_e.Medium) => 15,
-                nameof(Level_e.Hard) => 20,
-                nameof(Level_e.Very_Hard) => 25,
-                _ => 0,
-            };
+                return (level.Replace(' ', '_')) switch
+                {
+                    nameof(Level_e.Very_Easy) => 5,
+                    nameof(Level_e.Easy) => 10,
+                    nameof(Level_e.Medium) => 15,
+                    nameof(Level_e.Hard) => 20,
+                    nameof(Level_e.Very_Hard) => 25,
+                    _ => 0,
+                };
+            }
+            return 0;
         }
 
         private void ConvertSudokuSharpBoardToCollection(SudokuSharp.Board board)
@@ -340,7 +344,7 @@ namespace Sudoku_Solver_Xamarin.ViewModels
         /// <returns>The stream of the taken photo</returns>
         private async Task<Stream> TakePhoto()
         {
-            PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
+            PermissionStatus status = CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera).Result;
             if (status != PermissionStatus.Granted)
             {
                 var granted = await CrossPermissions.Current.RequestPermissionsAsync(new Permission[] { Permission.Camera });

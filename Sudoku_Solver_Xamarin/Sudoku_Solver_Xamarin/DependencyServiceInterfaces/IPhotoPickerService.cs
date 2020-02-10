@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace Sudoku_Solver_Xamarin.DependencyServiceInterfaces
+namespace SnapDoku_Xamarin.DependencyServiceInterfaces
 {
     public interface IPhotoPickerService
     {

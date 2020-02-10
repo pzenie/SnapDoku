@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Sudoku_Solver_Xamarin.Views
+namespace SnapDoku_Xamarin.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SnackBar : TemplatedView

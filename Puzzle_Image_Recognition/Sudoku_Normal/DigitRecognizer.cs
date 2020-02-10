@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using OpenCvSharp;
 using OpenCvSharp.ML;
@@ -26,9 +27,9 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
         /// <param name="trainPath">The path containing the training files
         ///                         training images should be seperated in folders signifying their associated digit</param>
         /// <returns>True if the training passed</returns>
-        public bool Train(string trainPath)
+        public bool Train(IReadOnlyCollection<ZipArchiveEntry> entries)
         {
-            var trainingImages = ReadTrainingImages(trainPath);
+            var trainingImages = ReadTrainingImages(entries);
             var samples = new Mat();
             foreach (var trainingImage in trainingImages)
             {
@@ -52,22 +53,29 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
         /// </summary>
         /// <param name="path">The training folder</param>
         /// <returns>List of images and their labels</returns>
-        public List<Tuple<Mat, int>> ReadTrainingImages(string path)
+        public List<Tuple<Mat, int>> ReadTrainingImages(IReadOnlyCollection<ZipArchiveEntry> entries)
         {
             var images = new List<Tuple<Mat, int>>();
 
-            foreach(var dir in new DirectoryInfo(path).GetDirectories())
+            foreach(var entry in entries)
             {
-                var label = int.Parse(dir.Name);
-                foreach(var imageFile in dir.GetFiles())
+                if(!entry.FullName.EndsWith("/"))
                 {
-                    var image = ProcessTrainingImage(new Mat(imageFile.FullName, ImreadModes.GrayScale));
-
-                    if (image == null)
+                    string[] paths = entry.FullName.Split('/');
+                    string labelString = paths[paths.Length - 2];
+                    int label = int.Parse(labelString);
+                    Stream stream = entry.Open();
+                    using (var memoryStream = new MemoryStream())
                     {
-                        continue;
+                        stream.CopyTo(memoryStream);
+                        byte[] imageBytes = memoryStream.ToArray();
+                        Mat image = Cv2.ImDecode(imageBytes, ImreadModes.GrayScale);
+                        Mat processedImage = ProcessTrainingImage(image);
+                        if(processedImage != null)
+                        {
+                            images.Add(new Tuple<Mat, int>(processedImage, label));
+                        }
                     }
-                    images.Add(new Tuple<Mat, int>(image, label));
                 }
             }
             return images;

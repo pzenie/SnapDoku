@@ -1,8 +1,8 @@
-﻿using Sudoku_Solver_Shared.Models;
+﻿using SnapDoku_Shared.Models;
 using System;
 using System.Collections.ObjectModel;
 
-namespace Sudoku_Solver_Shared.Initiation
+namespace SnapDoku_Shared.Initiation
 {
     public static class BoardInitiation
     {

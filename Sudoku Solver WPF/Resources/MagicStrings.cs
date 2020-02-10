@@ -1,4 +1,4 @@
-﻿namespace Sudoku_Solver_WPF.Resources
+﻿namespace SnapDoku_WPF.Resources
 {
    internal static class MagicStrings
    {

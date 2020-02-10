@@ -1,8 +1,8 @@
 ﻿using Caliburn.Micro;
-using Sudoku_Solver_WPF.ViewModels;
+using SnapDoku_WPF.ViewModels;
 using System.Windows;
 
-namespace Sudoku_Solver_WPF
+namespace SnapDoku_WPF
 {
     class Bootstrapper : BootstrapperBase
     {

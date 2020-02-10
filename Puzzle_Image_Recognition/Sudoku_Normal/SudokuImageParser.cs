@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Reflection;
 using OpenCvSharp;
 
 namespace Puzzle_Image_Recognition.Sudoku_Normal
@@ -21,18 +20,9 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
             {
                 using (ZipArchive z = new ZipArchive(s))
                 {
-                    string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    try
-                    {
-                        z.ExtractToDirectory(path);
-                    }
-                    catch (Exception) { /* Prlly just means the file already exists, TODO should find a better way to handle this */ }
 
-                    path += "/digits";
-                    if (Directory.Exists(path))
-                    {
-                        dr.Train(path);
-                    }
+                    IReadOnlyCollection<ZipArchiveEntry> entries = z.Entries;
+                    dr.Train(entries);
                 }
             }
         }
@@ -47,8 +37,6 @@ namespace Puzzle_Image_Recognition.Sudoku_Normal
         public int[,] Solve(byte[] file)
         {
             Mat sudoku = Cv2.ImDecode(file, ImreadModes.GrayScale);
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            bool passed = Cv2.ImWrite(path + @"/test1.jpg", sudoku);
             Mat border = sudoku.Clone();
             border = PrepImage(border, true);
             Point[] corners = FindCorners(border);

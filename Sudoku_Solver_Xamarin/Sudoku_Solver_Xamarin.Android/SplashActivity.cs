@@ -6,7 +6,7 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Support.V7.App;
 
-namespace Sudoku_Solver_Xamarin.Droid
+namespace SnapDoku_Xamarin.Droid
 {
     [Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true, NoHistory = true, ScreenOrientation = ScreenOrientation.Portrait)]
     public class SplashActivity : AppCompatActivity
